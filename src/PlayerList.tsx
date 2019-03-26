@@ -24,9 +24,9 @@ const PlayerList: React.SFC<Props> = ({ userList, pileCards }) => {
   return (
     <Card title="플레이어">
       <Row>
-        {userList.map(user => (
-          <Col span={12}>
-            <Player user={user} pileCards={pileCards} key={user.id} />
+        {userList.map((user, index) => (
+          <Col span={12} key={user.id}>
+            <Player user={user} pileCards={pileCards} />
           </Col>
         ))}
       </Row>
