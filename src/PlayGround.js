@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 
 import cardData from './static/cards';
 
@@ -27,7 +27,7 @@ import Stack from './Stack.tsx';
  *
  */
 
-export default function PlayGround() {
+const PlayGround = () => {
   const [ users, setUsers ] = useState( [] ); // 세션정보 따로 뺴야됨, 사용자 들어옴 => 시작 => 카드분배 => 순서대로 ~
   const [ cards, setCards ] = useState( cardData );
   const [ discardHoleder, setDiscardHoleder ] = useState( [] );
@@ -148,4 +148,6 @@ export default function PlayGround() {
       </div>
     </div>
   );
-}
+};
+
+export default PlayGround;
