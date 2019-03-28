@@ -1,68 +1,27 @@
-const express = require( 'express' );
+const app = require( 'express' )();
+const server = require( 'http' ).Server( app );
+const io = require( 'socket.io' )( server );
 
-const app = express();
-const server = require( 'http' ).createServer( app );
+const path = require( 'path' );
 
-const http = require( 'http' ).Server( app );
-const io = require( 'socket.io' )( http );
+app.get( '/', function( req, res ) {
+  res.sendFile( path.resolve( __dirname, 'index.html' ) );
+} );
 
-app.use( '/', express.static( `${ __dirname }/build` ) );
-
-const port = 3001;
-
-io.sockets.on( 'connection', function( socket ) {
-  socket.on( 'channelJoin', function( channel ) {
-    socket.join( channel );
-    MongoClient.connect( 'mongodb://localhost:27017/', function( error, client ) {
-      if ( error ) console.log( error );
-      else {
-        const db = client.db( dbName );
-        db.collection( 'log' )
-          .find( { channel } )
-          .sort( { data: 1 } )
-          .toArray( function( err, doc ) {
-            if ( err ) console.log( err );
-            doc.forEach( function( item ) {
-              socket.emit( 'receive', { chat: item } );
-            } );
-            const msg = {
-              msg: `${ socket.handshake.address }님이 ${ channel } 채널에 입장하셨습니다.`,
-            };
-            io.to( channel ).emit( 'receive', { chat: msg } );
-            client.close();
-          } );
-      }
-    } );
-  } );
-  socket.on( 'send', function( data ) {
-    const dataAddinfo = { ip: socket.handshake.address, msg: data.msg, date: Date.now() };
-    MongoClient.connect( 'mongodb://localhost:27017/', function( error, client ) {
-      if ( error ) console.log( error );
-      else {
-        const db = client.db( dbName );
-        db.collection( 'log' ).insert(
-          {
-            ip: dataAddinfo.ip,
-            msg: dataAddinfo.msg,
-            date: dataAddinfo.date,
-            channel: data.channel,
-          },
-          function( err, doc ) {
-            if ( err ) console.log( err );
-            client.close();
-          },
-        );
-      }
-    } );
-    io.to( data.channel ).emit( 'receive', { chat: dataAddinfo } );
-  } );
-  socket.on( 'channelLeave', function( channel ) {
-    socket.leave( channel );
-    const msg = { msg: `${ socket.handshake.address }님이 ${ channel } 채널에서 퇴장하셨습니다.` };
-    io.to( channel ).emit( 'receive', { chat: msg } );
+io.on( 'connection', function( socket ) {
+  socket.on( 'chat message', function( msg ) {
+    console.log( 'msg > ', msg );
+    io.emit( 'chat message', msg );
   } );
 } );
 
-http.listen( 8000, function() {
-  console.log( 'listening on *:8000' );
+// io.on("connection", function(socket) {
+//   socket.emit("news", { hello: "world" });
+//   socket.on("my other event", function(data) {
+//     console.log(data);
+//   });
+// });
+
+server.listen( 3001, function() {
+  console.log( 'listening on *:3001' );
 } );
