@@ -5,8 +5,18 @@ import { Layout, Menu, Breadcrumb } from 'antd';
 
 const { Header, Content, Footer } = Layout;
 
+import socketIOClient from 'socket.io-client';
+
 class App extends Component {
-  render() {
+  public componentDidMount = () => {
+    const socket = socketIOClient('http://localhost:3001');
+    setInterval(socket.emit('chat message', 'dgngkqkqk!!!!'), 1000);
+    socket.on('chat message', (data: string) => {
+      console.log('data > ', data);
+    });
+  };
+
+  public render() {
     return (
       <Layout className="layout">
         <Header>
