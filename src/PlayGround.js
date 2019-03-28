@@ -133,9 +133,11 @@ const PlayGround = () => {
       <button type="button" onClick={() => additionUser()}>
         사용자 추가
       </button>
+      {/* 방장만 보이게 */}
       <button type="button" onClick={() => dealCard()}>
-        카드 분배
+        Start
       </button>
+      <button type="button">Join</button>
 
       <br />
       <br />
