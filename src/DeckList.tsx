@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Button } from 'antd';
-import Deck from './Deck';
+import Deck from './components/Deck';
 
 const ButtonGroup = Button.Group;
 

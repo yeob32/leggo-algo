@@ -1,3 +1,5 @@
+import React from 'react';
+
 const NormalLoginForm = () => <div>111</div>;
 
 export default NormalLoginForm;

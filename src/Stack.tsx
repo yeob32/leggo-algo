@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Card } from 'antd';
-import Cards from './Card';
+import Cards from './components/Card';
 
 interface Props {
   pileCards: [
@@ -12,7 +12,7 @@ interface Props {
   ];
 }
 
-const Stack: React.SFC<Props> = ({ pileCards }) => {
+const Stack = ({ pileCards }: Props) => {
   return (
     <Card title="남은 카드">
       {pileCards.map(ps => (

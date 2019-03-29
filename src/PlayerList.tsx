@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Row, Col, Card } from 'antd';
-import Player from './Player';
+import Player from './components/Player';
 
 interface Props {
   userList: [

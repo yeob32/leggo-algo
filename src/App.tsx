@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-
-import { Layout, Menu, Breadcrumb } from 'antd';
-
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
-
-const { Header, Content, Footer } = Layout;
-
 import socketIOClient from 'socket.io-client';
-
 import LoginForm from './components/LoginForm';
 
-// import './App.css';
-
+import MainStructure from './components/structure/MainStructure';
 class App extends Component {
   public componentDidMount = () => {
     const socket = socketIOClient('http://localhost:3001');
@@ -24,9 +14,9 @@ class App extends Component {
 
   public render() {
     return (
-      <div>
-        <LoginForm />;
-      </div>
+      <MainStructure>
+        <LoginForm />
+      </MainStructure>
     );
   }
 }
