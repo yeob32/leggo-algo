@@ -2,23 +2,28 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 
+import { Provider } from 'react-redux';
+import configureStore from './store/configureStore';
+
 import App from './App';
 import PlayGround from './PlayGround';
 import NotFound from './NotFound';
-// import NormalLoginForm from './NormalLoginForm';
 
 import * as serviceWorker from './serviceWorker';
 
 import 'antd/dist/antd.css';
 
+const store = configureStore();
+
 const routing = (
   <Router>
-    <Switch>
-      <Route exact path="/" component={App} />
-      <Route path="/play" component={PlayGround} />
-      {/* <Route path="/login" component={NormalLoginForm} /> */}
-      <Route component={NotFound} />
-    </Switch>
+    <Provider store={store}>
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route path="/play" component={PlayGround} />
+        <Route component={NotFound} />
+      </Switch>
+    </Provider>
   </Router>
 );
 
