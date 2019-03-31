@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    // "types": ["react", "jest"], // Error : react Duplicate identifier 'FormData'
     "baseUrl": "src/", // enables relative imports to root
     "outDir": "out/", // target for compiled files
     "allowSyntheticDefaultImports": true, // no errors on commonjs default import

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import useReactRouter from 'use-react-router';
 
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
 
 import './LoginForm.css';
 
@@ -11,14 +11,27 @@ const LoginForm = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
 
+  const addSession = () => {};
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    try {
+      if (id !== '' || password !== '') {
+        throw new Error('errors');
+      }
+    } catch (e) {
+      message.info('Enter anything');
+    }
+
+    return;
 
     try {
       if (id !== 'system' || password !== '1234') {
         throw new Error('권한 없음');
       }
 
+      // localStorage
       history.push('/play');
     } catch (e) {
       alert(e.message);

@@ -45,6 +45,7 @@
     "jest-pnp-resolver": "1.0.2",
     "jest-resolve": "23.6.0",
     "jest-watch-typeahead": "^0.2.1",
+    "lodash": "^4.17.11",
     "mini-css-extract-plugin": "0.5.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.2.1",
@@ -60,13 +61,13 @@
     "react-redux": "^6.0.1",
     "react-router-dom": "^5.0.0",
     "redux": "^4.0.1",
+    "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "resolve": "1.10.0",
     "sass-loader": "7.1.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "style-loader": "0.23.1",
-    "styled-components": "^4.2.0",
     "terser-webpack-plugin": "1.2.2",
     "tslint": "^5.14.0",
     "tslint-config-airbnb": "^5.11.1",
@@ -83,9 +84,7 @@
   "devDependencies": {
     "@types/react-redux": "^7.0.5",
     "@types/socket.io": "^2.1.2",
-    "@types/socket.io-client": "^1.4.32",
-    "@types/styled-components": "^4.1.12",
-    "redux-devtools-extension": "^2.13.8"
+    "@types/socket.io-client": "^1.4.32"
   },
   "browserslist": [
     ">0.2%",

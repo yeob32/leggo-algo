@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
 
-import cardData from './static/cards';
+import cardData from './static/cards.ts';
 
 import PlayerList from './PlayerList.tsx';
 import Stack from './Stack.tsx';
@@ -26,6 +26,56 @@ import Stack from './Stack.tsx';
  * drawer => history log
  *
  */
+
+// interface IUser {
+//   id: string;
+//   name: string;
+//   score: number;
+//   deck: Array<{}>;
+//   enter: boolean;
+//   order: number;
+//   super: {
+//     check: boolean, // true면 턴
+//     hold: boolean, // true면 턴
+//   };
+//   turn: boolean;
+// }
+
+// class User {
+//   id: string;
+
+//   name: string;
+
+//   score: number;
+
+//   deck: Array<{}>;
+
+//   enter: boolean;
+
+//   order: number;
+
+//   super: {
+//     check: boolean, // true면 턴
+//     hold: boolean, // true면 턴
+//   };
+
+//   turn: boolean;
+
+//   constructor( props: IUser ) {
+//     this.id = props.id;
+//     this.name = props.name;
+//     this.score = props.score;
+//     this.deck = props.deck;
+//     this.enter = props.enter;
+//     this.order = props.order;
+//     this.super = props.super;
+//     this.turn = props.turn;
+//   }
+// }
+
+// interface Users {
+//   Users: object[];
+// }
 
 const PlayGround = () => {
   const [ users, setUsers ] = useState( [] ); // 세션정보 따로 뺴야됨, 사용자 들어옴 => 시작 => 카드분배 => 순서대로 ~
@@ -75,10 +125,6 @@ const PlayGround = () => {
     const userData = users.concat( setUserData() );
 
     setUsers( userData );
-  };
-
-  const subtraction = () => {
-    // users.filter()
   };
 
   const getRandomCards = ( maxCardCount, drawCardTemp, drawCardList ) => {

@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 
 import { Provider } from 'react-redux';
-import configureStore from './store/configureStore';
+import configureStore from './store';
 
 import App from './App';
-import PlayGround from './PlayGround';
+import PlayGround from './PlayGround.js';
 import NotFound from './NotFound';
 
 import * as serviceWorker from './serviceWorker';
