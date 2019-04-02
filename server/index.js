@@ -1,11 +1,34 @@
 const app = require( 'express' )();
 const server = require( 'http' ).Server( app );
+// const cors = require( 'cors' );
+const bodyParser = require( 'body-parser' );
+
 const io = require( 'socket.io' )( server );
 const path = require( 'path' );
 
 const session = require( 'express-session' );
 
 const currentUsers = [];
+
+// app.use( cors() ); //yarn add cors
+
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded( { extended: true } ) );
+
+io.on( 'connection', function( socket ) {
+  socket.on( 'join', function( msg ) {
+    // 클라이언트에서 id 전달받아서 배열에 푸시
+    // currentUsers.push( { id: 'testId', name: 'testName' } );
+    io.emit( 'join', { id: 'testId', name: 'testName' } );
+  } );
+} );
+
+// io.on("connection", function(socket) {
+//   socket.emit("news", { hello: "world" });
+//   socket.on("my other event", function(data) {
+//     console.log(data);
+//   });
+// });
 
 app.use(
   session( {
@@ -14,6 +37,17 @@ app.use(
     saveUninitialized: true,
   } ),
 );
+
+app.all( '/*', function( req, res, next ) {
+  res.header( 'Access-Control-Allow-Origin', '*' );
+  res.header( 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS' );
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, Content-Length, X-Requested-With',
+  );
+
+  next();
+} );
 
 app.use( function( req, res, next ) {
   if ( !req.session.users ) {
@@ -27,16 +61,17 @@ app.get( '/', function( req, res ) {
   res.sendFile( path.resolve( __dirname, 'index.html' ) );
 } );
 
-app.get( '/login', function( req, res ) {
-  const result = {};
-  result.message = 'success';
-  currentUsers.push( { id: 'testId', name: 'testName' } );
-  req.session.users = { id: 'testId', name: 'testName' };
-  res.json( result );
+app.post( '/login', function( req, res ) {
+  const id = req.body.id;
+  const password = req.body.password;
+
+  currentUsers.push( { id, password } );
+  req.session.users = { id, password };
+  res.json( { code: '200', message: 'success' } );
 } );
 
-app.get( '/me', function( req, res ) {
-  res.json( { session: req.session, currentUsers } );
+app.get( '/users', function( req, res ) {
+  res.json( { session: req.session.users, currentUsers } );
 } );
 
 app.get( '/logout', function( req, res ) {
@@ -49,31 +84,6 @@ app.get( '/logout', function( req, res ) {
 app.get( '/test', function( req, res ) {
   res.sendFile( path.resolve( __dirname, 'test.html' ) );
 } );
-
-io.on( 'connection', function( socket ) {
-  socket.on( 'join', function( msg ) {
-    // 클라이언트에서 id 전달받아서 배열에 푸시
-    // currentUsers.push( { id: 'testId', name: 'testName' } );
-    io.emit( 'join', { id: 'testId', name: 'testName' } );
-  } );
-
-  socket.on( 'chat message', function( msg ) {
-    console.log( 'msg > server > on', msg );
-    io.emit( 'chat message', msg );
-  } );
-
-  socket.on( 'test', function( msg ) {
-    console.log( 'test > server > on', msg );
-    io.emit( 'test', msg );
-  } );
-} );
-
-// io.on("connection", function(socket) {
-//   socket.emit("news", { hello: "world" });
-//   socket.on("my other event", function(data) {
-//     console.log(data);
-//   });
-// });
 
 server.listen( 3001, function() {
   console.log( 'listening on *:3001' );

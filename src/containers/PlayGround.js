@@ -4,6 +4,7 @@ import cardData from '../static/cards';
 
 import PlayerList from './PlayerList';
 import Stack from './Stack';
+import UserCount from '../components/UserCount';
 
 /**
  * build => 카드 선택해서 내카드 덱에 삽입
@@ -125,6 +126,7 @@ const PlayGround = () => {
     <div>
       <p>남은 카드 개수 : {pileCards.length}</p>
       <p>순서 : {pileCards.length}</p>
+      <UserCount />
 
       <button type="button" onClick={() => additionUser()}>
         사용자 추가

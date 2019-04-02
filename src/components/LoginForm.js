@@ -5,6 +5,8 @@ import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
 
 import './LoginForm.css';
 
+import axios from 'axios';
+
 const LoginForm = () => {
   const { history, location, match } = useReactRouter();
 
@@ -13,27 +15,25 @@ const LoginForm = () => {
 
   const addSession = () => {};
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const info = () => {
+    message.info( 'This is a normal message' );
+  };
 
+  const handleSubmit = async e => {
+    e.preventDefault();
     try {
-      if ( id !== '' || password !== '' ) {
+      if ( id === '' || password === '' ) {
         throw new Error( 'Enter anything' );
       }
     } catch ( error ) {
-      message.info( error );
+      message.info( error.message );
     }
-
-    // try {
-    //   if ( id !== 'system' || password !== '1234' ) {
-    //     throw new Error( '권한 없음' );
-    //   }
-
-    //   // localStorage
-    //   history.push( '/play' );
-    // } catch ( e ) {
-    //   alert( e.message );
-    // }
+    const result = await axios.post( 'http://localhost:3001/login', { id, password } );
+    console.log( 'result > ', result );
+    if ( result.data.code === '200' ) {
+      console.log( 'asdf' );
+      history.push( '/play' );
+    }
   };
 
   return (
