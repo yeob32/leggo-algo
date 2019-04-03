@@ -32,6 +32,8 @@ const LoginForm = () => {
     console.log( 'result > ', result );
     if ( result.data.code === '200' ) {
       console.log( 'asdf' );
+
+      // redux put
       history.push( '/play' );
     }
   };
