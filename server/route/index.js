@@ -18,10 +18,6 @@ router.get( '/users', function( req, res ) {
   res.json( { session: req.session } );
 } );
 
-router.get( '/users', function( req, res ) {
-  res.json( { session: req.session } );
-} );
-
 router.get( '/logout', function( req, res ) {
   req.session.destroy( function( err ) {
     // cannot access session here
@@ -29,4 +25,4 @@ router.get( '/logout', function( req, res ) {
   } );
 } );
 
-module.exports = router;
+module.exports = function( app ) {};

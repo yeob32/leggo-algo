@@ -8,10 +8,8 @@ const router = require( './route' );
 const sessionConfig = require( './session' );
 
 app.use( cors() );
-
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded( { extended: true } ) );
-
 app.use( sessionConfig );
 
 app.use( function( req, res, next ) {
