@@ -18,9 +18,9 @@ class App extends Component {
   // };
 
   componentDidMount() {
-    const user11 = getSession( 1 );
-
-    console.log( 'user > ', this.props.user );
+    console.log( 'this.props > ', this.props );
+    console.log( 'getSession', getSession() );
+    console.log( 'this.props !!!!> ', this.props );
   }
 
   render() {
@@ -37,7 +37,7 @@ const mapStateToProps = state => ( {
 } );
 
 const mapDispatchToProps = dispatch => ( {
-  getSession: id => dispatch( getSession( id ) ),
+  getSession: data => dispatch( getSession() ),
 } );
 
 export default connect(

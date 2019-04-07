@@ -1,18 +1,16 @@
 import { SAVE, UPDATE, GET, REMOVE } from './types';
 
-export function getSession( sessionId ) {
-  console.log( 'action > ', sessionId );
+export function saveSession( session ) {
+  console.log( 'action > ', session );
   return {
-    type: GET,
-    payload: sessionId,
+    type: SAVE,
+    payload: session,
   };
 }
 
-export function deleteMessage( timestamp ) {
+export function getSession() {
+  console.log( 'action > ' );
   return {
-    type: REMOVE,
-    meta: {
-      timestamp,
-    },
+    type: GET,
   };
 }

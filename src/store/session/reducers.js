@@ -2,14 +2,20 @@ import { SAVE, UPDATE, GET, REMOVE } from './types';
 
 const initialState = {
   session: {
-    id: 1,
-    name: 'test user',
+    id: null,
+    name: '',
   },
 };
 
 export default function session( state = initialState, action ) {
   console.log( 'reducers > ', state, action );
   switch ( action.type ) {
+    case SAVE:
+      console.log( 'reducers > action.type', action.type );
+      console.log( 'state > ', state );
+      return {
+        session: state.session,
+      };
     case GET:
       console.log( 'reducers > action.type', action.type );
       return {

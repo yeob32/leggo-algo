@@ -3,14 +3,14 @@ const path = require( 'path' );
 
 const router = express.Router();
 
-router.get( '/test', function( req, res ) {
-  const id = req.query.id;
-  const name = req.query.name;
+router.post( '/login', function( req, res ) {
+  const id = req.body.id;
+  const name = req.body.name;
   if ( req.session.rds.some( ss => ss.id === id ) ) {
     res.json( { code: '400', message: 'fail', detail: 'aleady signed' } );
   } else {
     req.session.rds.push( { id, name } );
-    res.json( { code: '200', message: 'success' } );
+    res.json( { code: '200', message: 'success', session: { id } } );
   }
 } );
 
@@ -25,4 +25,4 @@ router.get( '/logout', function( req, res ) {
   } );
 } );
 
-module.exports = function( app ) {};
+module.exports = router;

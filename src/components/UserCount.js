@@ -5,13 +5,15 @@ import axios from 'axios';
 const UserCount = () => {
   const [ user, setUser ] = useState( [] );
   useEffect( () => {
-    getUsers();
+    // getUsers();
+    setUser( [] );
   } );
 
   const getUsers = async () => {
-    const result = await axios.get( 'http://localhost:3001/users' );
-
-    setUser( result.data );
+    console.log( 'asdsd' );
+    // const result = await axios.get( 'http://localhost:3001/users' );
+    // setUser(result.data);
+    setUser( [] );
   };
 
   return <div>접속중인 유저 : {JSON.stringify( user )}</div>;

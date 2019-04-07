@@ -16,15 +16,15 @@ import 'antd/dist/antd.css';
 const store = configureStore();
 
 const routing = (
-  <Router>
-    <Provider store={store}>
+  <Provider store={store}>
+    <Router>
       <Switch>
         <Route exact path="/" component={App} />
         <Route path="/play" component={PlayGround} />
         <Route component={NotFound} />
       </Switch>
-    </Provider>
-  </Router>
+    </Router>
+  </Provider>
 );
 
 ReactDOM.render( routing, document.getElementById( 'root' ) );
