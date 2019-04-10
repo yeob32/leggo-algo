@@ -1,4 +1,5 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
+/* eslint-disable react/no-unused-state */
+import React, { Component } from 'react';
 
 import cardData from '../static/cards';
 
@@ -6,7 +7,9 @@ import PlayerList from './PlayerList';
 import Stack from './Stack';
 import UserCount from '../components/UserCount';
 
-import Button from '../components/Button';
+import { Button } from 'antd';
+
+import socketUtil, { init } from '../utils/socketUtil';
 
 /**
  * build => 카드 선택해서 내카드 덱에 삽입
@@ -30,24 +33,26 @@ import Button from '../components/Button';
  *
  */
 
-const PlayGround = () => {
-  const [ users, setUsers ] = useState( [] ); // 세션정보 따로 뺴야됨, 사용자 들어옴 => 시작 => 카드분배 => 순서대로 ~
-  const [ cards, setCards ] = useState( cardData );
-  const [ discardHoleder, setDiscardHoleder ] = useState( [] );
-  const [ pileCards, setPileCards ] = useState( cardData );
-  const [ dealYn, setDealYn ] = useState( false );
-  const [ gameStatus, setGameStatus ] = useState( 'ready' );
+init( 'http://localhost:3001' );
 
-  const maxUserCount = 4;
+const maxUserCount = 4;
+class PlayGround extends Component {
+  constructor( props ) {
+    super( props );
 
-  useEffect( () => {
-    document.title = `Leggg Algo`;
-    console.log( 'userEffect >>>> ' );
-  } );
+    this.state = {
+      member: [],
+      cards: cardData,
+      discardHoleder: [],
+      pileCards: cardData,
+      dealYn: false,
+      gameStatus: 'ready',
+    };
+  }
 
-  const setUserData = () => {
+  setUserData = () => {
     return {
-      id: users.length + 1,
+      id: this.state.member.length + 1,
       name: '',
       score: 0,
       deck: [],
@@ -61,41 +66,31 @@ const PlayGround = () => {
     };
   };
 
-  const isCrowded = () => {
-    const userCount = users.length;
+  isCrowded = () => {
+    const userCount = this.state.member.length;
     return userCount >= maxUserCount;
   };
 
-  const additionUser = () => {
-    if ( isCrowded() ) {
-      return;
-    }
+  getRandomCards = ( maxCardCount, drawCardTemp, drawCardList ) => {
+    const { pileCards } = this.state;
 
-    if ( dealYn ) {
-      return;
-    }
-
-    const userData = users.concat( setUserData() );
-
-    setUsers( userData );
-  };
-
-  const getRandomCards = ( maxCardCount, drawCardTemp, drawCardList ) => {
     const randomCard = pileCards[Math.floor( Math.random() * pileCards.length ) + 1 - 1];
     if ( drawCardTemp.length < maxCardCount ) {
       if ( !drawCardTemp.includes( randomCard ) && !drawCardList.includes( randomCard ) ) {
         drawCardTemp.push( randomCard );
       }
 
-      getRandomCards( maxCardCount, drawCardTemp, drawCardList );
+      this.getRandomCards( maxCardCount, drawCardTemp, drawCardList );
     }
 
     return drawCardTemp;
   };
 
-  const dealCard = () => {
-    const maxCardCount = isCrowded() ? 3 : 4;
-    if ( users.length === 0 ) {
+  dealCard = () => {
+    const { member, dealYn, pileCards } = this.state;
+
+    const maxCardCount = this.isCrowded() ? 3 : 4;
+    if ( member.length === 0 ) {
       return;
     }
 
@@ -103,11 +98,9 @@ const PlayGround = () => {
       return;
     }
 
-    setDealYn( true );
-
     let drawCardList = [];
-    const updateUser = users.map( user => {
-      const tempDrawCards = getRandomCards( maxCardCount, [], drawCardList );
+    const updateUser = member.map( user => {
+      const tempDrawCards = this.getRandomCards( maxCardCount, [], drawCardList );
       drawCardList = drawCardList.concat( tempDrawCards );
 
       return {
@@ -116,42 +109,57 @@ const PlayGround = () => {
       };
     } );
 
-    setDiscardHoleder( drawCardList );
-    setPileCards( pileCards.filter( card => !drawCardList.includes( card ) ) );
-
-    setUsers( updateUser );
+    this.setState( {
+      dealYn: true,
+      discardHoleder: drawCardList,
+      pileCards: pileCards.filter( card => !drawCardList.includes( card ) ),
+      member: updateUser,
+    } );
   };
 
-  const shuffle = () => {};
+  shuffle = () => {};
 
-  return (
-    <div>
-      <p>남은 카드 개수 : {pileCards.length}</p>
-      <p>순서 : {pileCards.length}</p>
-      <UserCount />
+  join = () => {
+    socketUtil().emit( 'join', 'testId', 'testName' ); // => redux getSession
+    socketUtil().on( 'user-list', data => {
+      this.setState( { member: data } );
+    } );
+  };
 
-      <button type="button" onClick={() => additionUser()}>
-        사용자 추가
-      </button>
-      {/* 방장만 보이게 */}
-      <button type="button" onClick={() => dealCard()}>
-        Start
-      </button>
-      <button type="button">Join</button>
+  render() {
+    const { pileCards, member } = this.state;
 
-      <Button type="primary">ccc</Button>
+    const { additionUser, dealCard, join } = this;
 
-      <br />
-      <br />
-      <PlayerList userList={users} pileCards={pileCards} />
-
-      <br />
-
+    return (
       <div>
-        <Stack pileCards={pileCards} />
+        <p>남은 카드 개수 : {pileCards.length}</p>
+        <p>순서 : {pileCards.length}</p>
+        <UserCount />
+
+        <Button type="" onClick={() => additionUser()}>
+          사용자 추가
+        </Button>
+
+        <Button type="" onClick={() => dealCard()}>
+          Start
+        </Button>
+        <Button type="primary" onClick={() => join()}>
+          Join
+        </Button>
+
+        <br />
+        <br />
+        <PlayerList userList={member} pileCards={pileCards} />
+
+        <br />
+
+        <div>
+          <Stack pileCards={pileCards} />
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default PlayGround;

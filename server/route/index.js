@@ -6,6 +6,7 @@ const router = express.Router();
 router.post( '/login', function( req, res ) {
   const id = req.body.id;
   const name = req.body.name;
+  const password = req.body.password;
   if ( req.session.rds.some( ss => ss.id === id ) ) {
     res.json( { code: '400', message: 'fail', detail: 'aleady signed' } );
   } else {

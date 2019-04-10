@@ -20,6 +20,7 @@ class LoginForm extends Component {
 
     this.state = {
       id: '',
+      name: '',
       password: '',
     };
 
@@ -38,27 +39,21 @@ class LoginForm extends Component {
   handleSubmit = async e => {
     e.preventDefault();
 
-    const { id, password } = this.state;
+    const { id, password, name } = this.state;
 
     try {
-      if ( id === '' || password === '' ) {
+      if ( id === '' || password === '' || name === '' ) {
         throw new Error( 'Enter anything' );
+      }
+
+      const result = await axios.post( 'http://localhost:3001/login', { id, name, password } );
+      if ( result.data.code === '200' ) {
+        // redux put
+        saveSession( { id, name } );
+        this.props.history.push( '/play' ); // history.push( '/play' );
       }
     } catch ( error ) {
       message.info( error.message );
-    }
-    const result = await axios.post( 'http://localhost:3001/login', { id, password } );
-    if ( result.data.code === '200' ) {
-      // redux put
-
-      console.log( 'this.props > ', this.props );
-      saveSession( { id, name: 'test' } );
-      // this.context.router.history.push( '/play' );
-
-      console.log( 'this.props2 > ', this.props );
-      console.log( 'getSession() ', getSession() );
-      console.log( 'getSession() ', this.props.user );
-      // this.props.history.push( '/play' ); // history.push( '/play' );
     }
   };
 
@@ -73,6 +68,14 @@ class LoginForm extends Component {
           <Form.Item>
             <Input
               name="id"
+              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="UserId"
+              onChange={this.handleChange}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Input
+              name="name"
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder="Username"
               onChange={this.handleChange}
