@@ -6,6 +6,8 @@ import PlayerList from './PlayerList';
 import Stack from './Stack';
 import UserCount from '../components/UserCount';
 
+import Button from '../components/Button';
+
 /**
  * build => 카드 선택해서 내카드 덱에 삽입
  * deck => 사용자 카드
@@ -136,6 +138,8 @@ const PlayGround = () => {
         Start
       </button>
       <button type="button">Join</button>
+
+      <Button type="primary">ccc</Button>
 
       <br />
       <br />

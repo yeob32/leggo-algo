@@ -1,4 +1,4 @@
-import { SAVE, UPDATE, GET, REMOVE } from './types';
+import { SAVE, UPDATE, GET, REMOVE } from './actions';
 
 const initialState = {
   session: {
@@ -8,16 +8,16 @@ const initialState = {
 };
 
 export default function session( state = initialState, action ) {
-  console.log( 'reducers > ', state, action );
   switch ( action.type ) {
     case SAVE:
-      console.log( 'reducers > action.type', action.type );
-      console.log( 'state > ', state );
+      console.log( 'reducers >>>>>>>>>>>>>>>>>>> ', state, action );
+
       return {
         session: state.session,
       };
     case GET:
-      console.log( 'reducers > action.type', action.type );
+      console.log( 'reducers >>>>>>>>>>>>>>>>>>> ', state, action );
+
       return {
         session: state.session,
       };
@@ -26,6 +26,7 @@ export default function session( state = initialState, action ) {
         session: state.messages.filter( message => message.timestamp !== action.meta.timestamp ),
       };
     default:
+      console.log( 'reducers default >>>>>>>>>>>>>>>>>>> ', state, action );
       return state;
   }
 }

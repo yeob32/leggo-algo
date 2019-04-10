@@ -6,6 +6,8 @@ const io = require( 'socket.io' )( server );
 const path = require( 'path' );
 const router = require( './route' );
 const sessionConfig = require( './session' );
+const sessionStore = require( './session/sessionStore' );
+const gameStatus = require( './game' );
 
 app.use( cors() );
 app.use( bodyParser.json() );
@@ -22,13 +24,31 @@ app.use( function( req, res, next ) {
 
 app.use( router );
 
-io.on( 'connection', function( socket ) {
-  socket.on( 'join', function( name ) {
-    // 클라이언트에서 id 전달받아서 배열에 푸시 => redux dispatch - join user list => render
-    io.emit( 'join', name );
-  } );
-} );
-
 server.listen( 3001, function() {
   console.log( 'listening on *:3001' );
 } );
+
+io.on( 'connection', onConnect );
+
+function onConnect( socket ) {
+  socket.on( 'test', function( data ) {
+    socket.emit( 'request' /* */ ); // emit an event to the socket
+    io.emit( 'broadcast' /* */ ); // emit an event to all connected sockets
+
+    const si = setInterval( () => {}, 1000 );
+    clearInterval( si );
+  } );
+
+  socket.on( 'say to someone', function( id, msg ) {
+    socket.broadcast.to( id ).emit( 'my message', msg );
+  } );
+
+  socket.on( 'join', function( id, name ) {
+    sessionStore.initSession( id, name );
+    gameStatus.members.push( sessionStore.getSession( id ) );
+
+    io.emit( 'user-list', sessionStore.getSessionList() );
+  } );
+
+  socket.on( 'init-deck', function() {} );
+}
