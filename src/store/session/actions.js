@@ -3,17 +3,14 @@ export const UPDATE = 'UPDATE';
 export const GET = 'GET';
 export const REMOVE = 'REMOVE';
 
-export function saveSession( session ) {
-  console.log( 'action > ', session );
-  return {
-    type: SAVE,
-    payload: session,
-  };
-}
+export const saveSession = session => {
+  console.log( 'action session > ', session );
+  return { type: SAVE, session };
+};
 
-export function getSession() {
+export const getSession = () => {
   console.log( 'action > ' );
   return {
     type: GET,
   };
-}
+};

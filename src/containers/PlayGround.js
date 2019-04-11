@@ -1,13 +1,15 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 
+import { connect } from 'react-redux';
+
 import cardData from '../static/cards';
 
 import PlayerList from './PlayerList';
 import Stack from './Stack';
-import UserCount from '../components/UserCount';
-
-import { Button } from 'antd';
+import MainStructure from '../components/structure/MainStructure';
+import StatusInterface from '../components/StatusInterface';
+import ControllPanel from '../components/ControllPanel';
 
 import socketUtil, { init } from '../utils/socketUtil';
 
@@ -50,21 +52,16 @@ class PlayGround extends Component {
     };
   }
 
-  setUserData = () => {
-    return {
-      id: this.state.member.length + 1,
-      name: '',
-      score: 0,
-      deck: [],
-      enter: true,
-      order: null,
-      super: {
-        check: false, // true면 턴
-        hold: false, // true면 턴
-      },
-      turn: false,
-    };
-  };
+  componentDidMount() {
+    socketUtil().emit( 'check-user-list' );
+    socketUtil().on( 'user-list', data => {
+      this.setState( { member: data } );
+    } );
+  }
+
+  componentWillUnmount() {
+    socketUtil().emit( 'disconnect-user' );
+  }
 
   isCrowded = () => {
     const userCount = this.state.member.length;
@@ -119,47 +116,42 @@ class PlayGround extends Component {
 
   shuffle = () => {};
 
+  start = () => {
+    socketUtil().emit( 'start' );
+  };
+
   join = () => {
-    socketUtil().emit( 'join', 'testId', 'testName' ); // => redux getSession
+    const { id, name } = this.props.session;
+
+    socketUtil().emit( 'join', id, name ); // => redux getSession
     socketUtil().on( 'user-list', data => {
       this.setState( { member: data } );
     } );
   };
 
   render() {
+    const { session } = this.props;
     const { pileCards, member } = this.state;
-
     const { additionUser, dealCard, join } = this;
 
     return (
-      <div>
-        <p>남은 카드 개수 : {pileCards.length}</p>
-        <p>순서 : {pileCards.length}</p>
-        <UserCount />
-
-        <Button type="" onClick={() => additionUser()}>
-          사용자 추가
-        </Button>
-
-        <Button type="" onClick={() => dealCard()}>
-          Start
-        </Button>
-        <Button type="primary" onClick={() => join()}>
-          Join
-        </Button>
-
-        <br />
-        <br />
-        <PlayerList userList={member} pileCards={pileCards} />
-
-        <br />
-
+      <MainStructure>
         <div>
+          <StatusInterface session={session} pileCards={pileCards} members={member} />
+          <ControllPanel additionUser={additionUser} dealCard={dealCard} join={join} />
+
+          <br />
+          <br />
+
+          <PlayerList userList={member} pileCards={pileCards} />
+
+          <br />
+
           <Stack pileCards={pileCards} />
         </div>
-      </div>
+      </MainStructure>
     );
   }
 }
 
-export default PlayGround;
+export default connect( state => state )( PlayGround );

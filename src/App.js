@@ -3,46 +3,14 @@ import LoginForm from './components/LoginForm';
 
 import MainStructure from './components/structure/MainStructure';
 
-import { connect } from 'react-redux';
-
-import { getSession, saveSession } from './store/session/actions';
-
-import socketUtil, { init } from './utils/socketUtil';
-
 class App extends Component {
-  componentDidMount() {
-    saveSession( { id: 'testId', name: 'testName' } );
-
-    init( 'http://localhost:3001' );
-  }
-
-  testSession = () => {
-    saveSession( { id: 'testId', name: 'testName' } );
-  };
-
   render() {
     return (
-      <MainStructure>
-        {JSON.stringify( this.props.user )}
-        <button type="button" onClick={() => this.testSession()}>
-          test
-        </button>
+      <div>
         <LoginForm />
-      </MainStructure>
+      </div>
     );
   }
 }
 
-const mapStateToProps = state => ( {
-  user: state.session,
-} );
-
-const mapDispatchToProps = dispatch => ( {
-  getSession: data => dispatch( getSession() ),
-  saveSession: data => dispatch( saveSession( data ) ),
-} );
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)( App );
+export default App;

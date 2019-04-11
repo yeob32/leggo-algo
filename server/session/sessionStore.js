@@ -6,7 +6,7 @@ const createSession = ( id, name ) => ( {
   enter: false,
   order: null,
   super: {
-    chief: false,
+    host: false,
     check: false, // true면 턴
     hold: false, // true면 턴
   },
@@ -16,7 +16,12 @@ const createSession = ( id, name ) => ( {
 const session = [];
 
 function initSession( id, name ) {
-  session.push( createSession( id, name ) );
+  const sessionObject = createSession( id, name );
+  if ( session.length === 0 ) {
+    sessionObject.super.host = true;
+  }
+
+  session.push( sessionObject );
 }
 
 function getSession( id ) {
@@ -27,8 +32,17 @@ function getSessionList() {
   return session;
 }
 
+function removeSession( id ) {
+  return session.filter( s => s.id !== id );
+}
+
+function updateSession( id ) {
+  return session.filter( s => s.id !== id );
+}
+
 module.exports = {
   initSession,
   getSession,
   getSessionList,
+  removeSession,
 };

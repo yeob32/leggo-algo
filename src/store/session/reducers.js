@@ -1,25 +1,23 @@
 import { SAVE, UPDATE, GET, REMOVE } from './actions';
 
 const initialState = {
-  session: {
-    id: null,
-    name: '',
-  },
+  id: null,
+  name: '',
 };
 
 export default function session( state = initialState, action ) {
   switch ( action.type ) {
     case SAVE:
-      console.log( 'reducers >>>>>>>>>>>>>>>>>>> ', state, action );
+      console.log( 'reducers SAVE >>>>>>>>>>>>>>>>>>> ', state, action );
 
       return {
-        session: state.session,
+        ...action.session,
       };
     case GET:
-      console.log( 'reducers >>>>>>>>>>>>>>>>>>> ', state, action );
+      console.log( 'reducers GET >>>>>>>>>>>>>>>>>>> ', state, action );
 
       return {
-        session: state.session,
+        ...state.payload,
       };
     case REMOVE:
       return {

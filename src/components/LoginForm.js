@@ -3,9 +3,10 @@ import useReactRouter from 'use-react-router';
 import PropTypes from 'prop-types';
 
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-import { saveSession, getSession } from '../store/session/actions';
+import { connect } from 'react-redux';
+import { saveSession } from '../store/session/actions';
+
 import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
 
 import './LoginForm.css';
@@ -49,7 +50,7 @@ class LoginForm extends Component {
       const result = await axios.post( 'http://localhost:3001/login', { id, name, password } );
       if ( result.data.code === '200' ) {
         // redux put
-        saveSession( { id, name } );
+        this.props.saveSession( { id, name } );
         this.props.history.push( '/play' ); // history.push( '/play' );
       }
     } catch ( error ) {
@@ -106,18 +107,13 @@ class LoginForm extends Component {
   }
 }
 
-const mapStateToProps = state => ( {
-  user: state.session,
-} );
-
 const mapDispatchToProps = dispatch => ( {
   saveSession: data => dispatch( saveSession( data ) ),
-  getSession: () => dispatch( getSession() ),
 } );
 
 export default withRouter(
   connect(
-    mapStateToProps,
+    () => ( {} ),
     mapDispatchToProps,
   )( LoginForm ),
 );

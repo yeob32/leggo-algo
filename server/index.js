@@ -44,10 +44,23 @@ function onConnect( socket ) {
   } );
 
   socket.on( 'join', function( id, name ) {
+    const sessionCount = sessionStore.getSessionList().length;
+    if ( sessionCount === 0 ) {
+    }
+
     sessionStore.initSession( id, name );
     gameStatus.members.push( sessionStore.getSession( id ) );
 
     io.emit( 'user-list', sessionStore.getSessionList() );
+  } );
+
+  socket.on( 'check-user-list', function() {
+    io.emit( 'user-list', sessionStore.getSessionList() );
+  } );
+
+  socket.on( 'disconnect-user', function( id ) {
+    sessionStore.removeSession( id );
+    console.log( 'disconnected user > ', id );
   } );
 
   socket.on( 'init-deck', function() {} );
