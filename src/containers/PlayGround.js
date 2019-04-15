@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
+import { updateStatus } from '../store/game/actions';
 
 import cardData from '../static/cards';
 
@@ -114,16 +115,15 @@ class PlayGround extends Component {
     } );
   };
 
-  shuffle = () => {};
-
   start = () => {
+    // start => 카드분배 => 턴 순회 1분 => 점수
     socketUtil().emit( 'start' );
   };
 
   join = () => {
     const { id, name } = this.props.session;
 
-    socketUtil().emit( 'join', id, name ); // => redux getSession
+    socketUtil().emit( 'join', id, name );
     socketUtil().on( 'user-list', data => {
       this.setState( { member: data } );
     } );
@@ -140,7 +140,6 @@ class PlayGround extends Component {
           <StatusInterface session={session} pileCards={pileCards} members={member} />
           <ControllPanel additionUser={additionUser} dealCard={dealCard} join={join} />
 
-          <br />
           <br />
 
           <PlayerList userList={member} pileCards={pileCards} />
