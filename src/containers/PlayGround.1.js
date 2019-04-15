@@ -4,7 +4,7 @@ import cardData from '../static/cards';
 
 import PlayerList from './PlayerList';
 import Stack from './Stack';
-import UserCount from '../components/UserCount';
+import UserCount from '../components/PlayerCount';
 
 import { Button } from 'antd';
 
