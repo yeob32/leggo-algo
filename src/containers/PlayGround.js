@@ -138,9 +138,11 @@ class PlayGround extends Component {
       <MainStructure>
         <div>
           <StatusInterface session={session} pileCards={pileCards} members={member} />
-          <ControllPanel additionUser={additionUser} dealCard={dealCard} join={join} />
 
           <br />
+
+          <ControllPanel additionUser={additionUser} dealCard={dealCard} join={join} />
+
           <br />
 
           <PlayerList userList={member} pileCards={pileCards} />
