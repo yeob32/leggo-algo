@@ -16,7 +16,7 @@ import socketUtil, { init } from '../utils/socketUtil';
  * action
  * filter
  * shuffle
- * discardHoleder => drawCard
+ * discardHolder => drawCard
  *
  * 화면 구조
  * 사용자 보유 카드 노출
@@ -37,7 +37,7 @@ init( 'http://localhost:3001' );
 const PlayGround = () => {
   const [ users, setUsers ] = useState( [] ); // 세션정보 따로 뺴야됨, 사용자 들어옴 => 시작 => 카드분배 => 순서대로 ~
   const [ cards, setCards ] = useState( cardData );
-  const [ discardHoleder, setDiscardHoleder ] = useState( [] );
+  const [ discardHolder, setdiscardHolder ] = useState( [] );
   const [ pileCards, setPileCards ] = useState( cardData );
   const [ dealYn, setDealYn ] = useState( false );
   const [ gameStatus, setGameStatus ] = useState( 'ready' );
@@ -120,7 +120,7 @@ const PlayGround = () => {
       };
     } );
 
-    setDiscardHoleder( drawCardList );
+    setdiscardHolder( drawCardList );
     setPileCards( pileCards.filter( card => !drawCardList.includes( card ) ) );
 
     setUsers( updateUser );

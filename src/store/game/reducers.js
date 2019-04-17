@@ -4,7 +4,7 @@ const initialState = {
   status: 'ready',
   deal: false,
   cards: [],
-  discardHoleder: [],
+  discardHolder: [],
   pileCards: [],
   members: [],
 };

@@ -16,11 +16,11 @@ import socketUtil, { init } from '../utils/socketUtil';
 
 /**
  * build => 카드 선택해서 내카드 덱에 삽입
- * deck => 사용자 카드
+ * deck => 사용자 카드 
  * action
  * filter
  * shuffle
- * discardHoleder => drawCard
+ * discardHolder => drawCard
  *
  * 화면 구조
  * 사용자 보유 카드 노출
@@ -44,9 +44,16 @@ class PlayGround extends Component {
     super( props );
 
     this.state = {
+      // status: 'ready',
+      // deal: false,
+      // cards: [],
+      // discardHolder: [], //
+      // pileCards: [], // 남은 카드
+      // members: [],
+
       member: [],
       cards: cardData,
-      discardHoleder: [],
+      discardHolder: [],
       pileCards: cardData,
       dealYn: false,
       gameStatus: 'ready',
@@ -54,8 +61,8 @@ class PlayGround extends Component {
   }
 
   componentDidMount() {
-    socketUtil().emit( 'check-user-list' );
-    socketUtil().on( 'user-list', data => {
+    socketUtil().emit( 'member-list' );
+    socketUtil().on( 'member-list', data => {
       this.setState( { member: data } );
     } );
   }
@@ -109,7 +116,7 @@ class PlayGround extends Component {
 
     this.setState( {
       dealYn: true,
-      discardHoleder: drawCardList,
+      discardHolder: drawCardList,
       pileCards: pileCards.filter( card => !drawCardList.includes( card ) ),
       member: updateUser,
     } );

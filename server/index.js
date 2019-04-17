@@ -8,6 +8,7 @@ const router = require( './route' );
 const sessionConfig = require( './session' );
 const sessionStore = require( './session/sessionStore' );
 const gameStatus = require( './game' );
+const gameUtils = require( './game/gameUtils' );
 
 app.use( cors() );
 app.use( bodyParser.json() );
@@ -43,25 +44,41 @@ function onConnect( socket ) {
     socket.broadcast.to( id ).emit( 'my message', msg );
   } );
 
+  /**
+   * 세션은 그냥 세션임 게임 참여 사용자 수와 상관없다.
+   * 게임 참여 시 사용자 id, name 받아서 게임 사용자 데이터 새로 만듬
+   */
   socket.on( 'join', function( id, name ) {
     const sessionCount = sessionStore.getSessionList().length;
-    if ( sessionCount === 0 ) {
-    }
+    const userId = sessionStore.getSession( id );
 
-    sessionStore.initSession( id, name );
-    gameStatus.members.push( sessionStore.getSession( id ) );
+    const memberList = gameUtils.getMemberList();
 
-    io.emit( 'user-list', sessionStore.getSessionList() );
+    gameUtils.initMember( id, name );
+
+    io.emit( 'member-list', memberList );
   } );
 
-  socket.on( 'check-user-list', function() {
-    io.emit( 'user-list', sessionStore.getSessionList() );
+  // 초기 참여인원 가져와서 렌더링
+  socket.on( 'member-list', function() {
+    io.emit( 'member-list', gameUtils.getMemberList() );
   } );
 
-  socket.on( 'disconnect-user', function( id ) {
-    sessionStore.removeSession( id );
-    console.log( 'disconnected user > ', id );
+  socket.on( 'init', function() {
+    // gameUtils.init()
   } );
 
-  socket.on( 'init-deck', function() {} );
+  // 시작
+  socket.on( 'start', function( data ) {
+    gameUtils.start();
+
+    io.emit( 'start', gameStatus );
+  } );
+
+  // 접속 종료
+  socket.on( 'disconnect', function( id ) {
+    gameUtils.disconnectMember( id );
+
+    io.emit( 'member-list', gameUtils.getMemberList() );
+  } );
 }
