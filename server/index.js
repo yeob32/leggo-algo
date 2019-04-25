@@ -44,6 +44,13 @@ function onConnect( socket ) {
     socket.broadcast.to( id ).emit( 'my message', msg );
   } );
 
+  socket.on( 'test', function( id, name ) {
+    sessionStore.initSession( 'kim', 'kim' )
+    sessionStore.initSession( 'lee', 'lee' )
+    sessionStore.initSession( 'park', 'park' )
+    io.emit( 'test', sessionStore.getSessionList() )
+  } )
+
   /**
    * 세션은 그냥 세션임 게임 참여 사용자 수와 상관없다.
    * 게임 참여 시 사용자 id, name 받아서 게임 사용자 데이터 새로 만듬
@@ -54,7 +61,10 @@ function onConnect( socket ) {
 
     const memberList = gameUtils.getMemberList();
 
-    gameUtils.initMember( id, name );
+    const alreadyJoinCheck = memberList.filter( member => member.id === id ).length === 0
+    if( alreadyJoinCheck ) {
+      gameUtils.initMember( id, name );
+    }
 
     io.emit( 'member-list', memberList );
   } );
@@ -69,15 +79,22 @@ function onConnect( socket ) {
   } );
 
   // 시작
-  socket.on( 'start', function( data ) {
+  socket.on( 'start', function( data ) { 
     gameUtils.start();
 
     io.emit( 'start', gameStatus );
   } );
 
+  // 모든 소켓 콜백은 game object 반환
+  socket.on( 'card-select', function( data ) {
+
+    io.emit( 'start', gameStatus );
+  } )
+  
+
   // 접속 종료
   socket.on( 'disconnect', function( id ) {
-    gameUtils.disconnectMember( id );
+    gameUtils.disconnect( id );
 
     io.emit( 'member-list', gameUtils.getMemberList() );
   } );

@@ -2,13 +2,25 @@ import React from 'react';
 
 import { Button } from 'antd';
 
-const ControllPanel = ( { additionUser, dealCard, join } ) => {
+const StartButton = ( start ) => (
+  <Button size="large" onClick={start} style={{ marginRight: '8px' }}>
+        Start
+  </Button>
+)
+
+const ControllPanel = ( { deal, start, join } ) => {
+  console.log( 'deal > ', deal );
+
   return (
     <div>
-      <Button size="large" onClick={() => dealCard()} style={{ marginRight: '8px' }}>
+      {
+        deal ? '' : (
+          <Button type="primary" size="large" onClick={start} style={{ marginRight: '8px' }}>
         Start
-      </Button>
-      <Button type="primary" size="large" onClick={() => join()} style={{ marginRight: '8px' }}>
+          </Button>
+ )
+        }
+      <Button type="primary" size="large" onClick={join} style={{ marginRight: '8px' }}>
         Join
       </Button>
     </div>

@@ -1,11 +1,11 @@
-const cardData = require( './cardData' );
+const cardData = require( './cardData' ).cards;
 
 const game = {
   status: 'ready',
   deal: false,
-  cards: [],
+  cards: cardData,
   discardHolder: [], //
-  pileCards: [], // 남은 카드
+  pileCards: cardData, // 남은 카드
   members: [],
 };
 

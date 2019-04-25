@@ -18,7 +18,8 @@ const PlayerInfo = user => (
         </Avatar>
       </Col>
       <Col span={12}>
-        <h1>{user.name}</h1>
+        <h1>{user.name} my turn!!!!</h1>
+        {/* 만약 user 의 turn 이 true 면  trun 바뀔때마다 members data 받아서 다시 렌더링 */}
       </Col>
     </Row>
   </div>

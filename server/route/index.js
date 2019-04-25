@@ -26,4 +26,18 @@ router.get( '/logout', function( req, res ) {
   } );
 } );
 
+router.get( '/test1', function( req, res ) {
+  req.session.destroy( function( err ) {
+    // cannot access session here
+    res.sendFile( path.resolve( __dirname, '../test.html' ) );
+  } );
+} );
+
+router.get( '/test', function( req, res ) {
+  req.session.destroy( function( err ) {
+    // cannot access session here
+    res.sendFile( path.resolve( __dirname, '../test2.html' ) );
+  } );
+} );
+
 module.exports = router;

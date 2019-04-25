@@ -1,8 +1,9 @@
+/* eslint-disable no-unreachable */
 const Game = require( './index' );
 
 const maxUserCount = 4;
 
-export const createMember = ( id, name ) => ( {
+const createMember = ( id, name ) => ( {
   id,
   name,
   deck: [],
@@ -17,7 +18,7 @@ export const createMember = ( id, name ) => ( {
   turn: false,
 } );
 
-export const initMember = ( id, name ) => {
+const initMember = ( id, name ) => {
   const memberData = createMember( id, name );
   if ( Game.members.length === 0 ) {
     memberData.super.host = true;
@@ -26,16 +27,16 @@ export const initMember = ( id, name ) => {
   Game.members.push( memberData );
 };
 
-export const start = () => {
+const start = () => {
   dealCard(); // 카드 분배
   // 순서 설정
 };
 
-export const getMemberList = () => {
+const getMemberList = () => {
   return Game.members;
 };
 
-export const disconnect = id => {
+const disconnect = id => {
   Game.members = Game.members.filter( member => member.id !== id );
 };
 
@@ -52,6 +53,9 @@ const dealCard = () => {
   }
 
   let drawCardList = [];
+
+  console.log( 'members >' , members );
+
   const updateUser = members.map( user => {
     const tempDrawCards = getRandomCards( maxCardCount, [], drawCardList );
     drawCardList = drawCardList.concat( tempDrawCards );
@@ -87,3 +91,11 @@ const isCrowded = () => {
   const userCount = Game.members.length;
   return userCount >= maxUserCount;
 };
+
+module.exports = {
+  createMember,
+  initMember,
+  start,
+  getMemberList,
+  disconnect
+}

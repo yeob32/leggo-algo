@@ -5,7 +5,7 @@ import MainStructure from './components/structure/MainStructure';
 
 import { connect } from 'react-redux';
 
-import { getSession, saveSession } from './store/session/actions';
+import { saveSession } from './store/session/actions';
 
 class App extends Component {
   componentDidMount() {
@@ -13,14 +13,14 @@ class App extends Component {
   }
 
   testSession = () => {
-    saveSession( { id: 'testId', name: 'testName' } );
+    this.props.saveSession( { id: 'testId', name: 'testName' } )
   };
 
   render() {
     return (
       <MainStructure>
-        {JSON.stringify( this.props.user )}
-        <button type="button" onClick={() => this.testSession()}>
+        {JSON.stringify( this.props.session )}
+        <button type="button" onClick={this.testSession}>
           test
         </button>
         <LoginForm />
@@ -29,16 +29,11 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => ( {
-  user: state.session,
-} );
-
 const mapDispatchToProps = dispatch => ( {
-  getSession: data => dispatch( getSession() ),
   saveSession: data => dispatch( saveSession( data ) ),
 } );
 
 export default connect(
-  mapStateToProps,
+  state => state,
   mapDispatchToProps,
 )( App );

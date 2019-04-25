@@ -16,6 +16,11 @@ const createSession = ( id, name ) => ( {
 const session = [];
 
 function initSession( id, name ) {
+  const sessionData = getSession( id )
+  if( sessionData ) {
+    return;
+  }
+
   const sessionObject = createSession( id, name );
   if ( session.length === 0 ) {
     sessionObject.super.host = true;
