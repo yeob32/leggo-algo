@@ -20,17 +20,35 @@ const createMember = ( id, name ) => ( {
 
 const initMember = ( id, name ) => {
   const memberData = createMember( id, name );
-  if ( Game.members.length === 0 ) {
+  const memberCount = Game.members.length;
+  if ( memberCount === 0 ) {
     memberData.super.host = true;
   }
+
+  memberData.order = memberCount;
+  memberData.enter = true;
 
   Game.members.push( memberData );
 };
 
 const start = () => {
   dealCard(); // 카드 분배
-  // 순서 설정
+  orderStack(); // 순서 설정
 };
+
+const action = type => {
+  switch ( type ) {
+    case 'selectPileCard':
+      break;
+    case 'selectDeck':
+      break;
+    default:
+  }
+
+  orderStack();
+};
+
+const setMember = id => {};
 
 const getMemberList = () => {
   return Game.members;
@@ -54,7 +72,7 @@ const dealCard = () => {
 
   let drawCardList = [];
 
-  console.log( 'members >' , members );
+  console.log( 'members >', members );
 
   const updateUser = members.map( user => {
     const tempDrawCards = getRandomCards( maxCardCount, [], drawCardList );
@@ -92,10 +110,52 @@ const isCrowded = () => {
   return userCount >= maxUserCount;
 };
 
+const orderStack = () => {
+  const count = Game.pileCards.length; //
+  let order = 0;
+
+  const turnOver = () => {
+    order += 1;
+    if ( order > Game.members.length - 1 ) {
+      order = 0;
+    }
+  };
+
+  if ( count > 0 ) {
+    Game.members[order].turn = true;
+
+    // const currentOrderUser = Game.members[order];
+    // currentOrderUser.turn = true;
+
+    console.log(
+      'order > %s , currentOrderUser > %s, restCount > %s ',
+      order,
+      Game.members[order],
+      count,
+    );
+
+    // currentOrderUser.turn = true;
+    // Game.members[order] = currentOrderUser;
+
+    turnOver();
+
+    // currentOrderUser.turn = true;
+
+    // Game.members = currentMembers.map( member => {
+    //   if ( member.id === currentOrderUser.id ) {
+    //     currentOrderUser.turn = true;
+    //     return currentOrderUser;
+    //   }
+
+    //   return member;
+    // } );
+  }
+};
+
 module.exports = {
   createMember,
   initMember,
   start,
   getMemberList,
-  disconnect
-}
+  disconnect,
+};

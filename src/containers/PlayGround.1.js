@@ -8,7 +8,7 @@ import UserCount from '../components/PlayerCount';
 
 import { Button } from 'antd';
 
-import socketUtil, { init } from '../utils/socketUtil';
+import socketUtil, { initSocket } from '../utils/socketUtil';
 
 /**
  * build => 카드 선택해서 내카드 덱에 삽입
@@ -32,7 +32,7 @@ import socketUtil, { init } from '../utils/socketUtil';
  *
  */
 
-init( 'http://localhost:3001' );
+initSocket( 'http://localhost:3001' );
 
 const PlayGround = () => {
   const [ users, setUsers ] = useState( [] ); // 세션정보 따로 뺴야됨, 사용자 들어옴 => 시작 => 카드분배 => 순서대로 ~

@@ -12,11 +12,11 @@ import MainStructure from '../components/structure/MainStructure';
 import StatusInterface from '../components/StatusInterface';
 import ControllPanel from '../components/ControllPanel';
 
-import socketUtil, { init } from '../utils/socketUtil';
+import socketUtil, { initSocket } from '../utils/socketUtil';
 
 /**
  * build => 카드 선택해서 내카드 덱에 삽입
- * deck => 사용자 카드 
+ * deck => 사용자 카드
  * action
  * filter
  * shuffle
@@ -36,7 +36,7 @@ import socketUtil, { init } from '../utils/socketUtil';
  *
  */
 
-init( 'http://localhost:3001' );
+initSocket( 'http://localhost:3001' );
 
 const maxUserCount = 4;
 class PlayGround extends Component {

@@ -8,7 +8,7 @@ const router = require( './route' );
 const sessionConfig = require( './session' );
 const sessionStore = require( './session/sessionStore' );
 const gameStatus = require( './game' );
-const gameUtils = require( './game/gameUtils' );
+const gameService = require( './game/gameService' );
 
 app.use( cors() );
 app.use( bodyParser.json() );
@@ -45,11 +45,11 @@ function onConnect( socket ) {
   } );
 
   socket.on( 'test', function( id, name ) {
-    sessionStore.initSession( 'kim', 'kim' )
-    sessionStore.initSession( 'lee', 'lee' )
-    sessionStore.initSession( 'park', 'park' )
-    io.emit( 'test', sessionStore.getSessionList() )
-  } )
+    sessionStore.initSession( 'kim', 'kim' );
+    sessionStore.initSession( 'lee', 'lee' );
+    sessionStore.initSession( 'park', 'park' );
+    io.emit( 'test', sessionStore.getSessionList() );
+  } );
 
   /**
    * 세션은 그냥 세션임 게임 참여 사용자 수와 상관없다.
@@ -59,11 +59,11 @@ function onConnect( socket ) {
     const sessionCount = sessionStore.getSessionList().length;
     const userId = sessionStore.getSession( id );
 
-    const memberList = gameUtils.getMemberList();
+    const memberList = gameService.getMemberList();
 
-    const alreadyJoinCheck = memberList.filter( member => member.id === id ).length === 0
-    if( alreadyJoinCheck ) {
-      gameUtils.initMember( id, name );
+    const alreadyJoinCheck = memberList.filter( member => member.id === id ).length === 0;
+    if ( alreadyJoinCheck ) {
+      gameService.initMember( id, name );
     }
 
     io.emit( 'member-list', memberList );
@@ -71,31 +71,29 @@ function onConnect( socket ) {
 
   // 초기 참여인원 가져와서 렌더링
   socket.on( 'member-list', function() {
-    io.emit( 'member-list', gameUtils.getMemberList() );
+    io.emit( 'member-list', gameService.getMemberList() );
   } );
 
   socket.on( 'init', function() {
-    // gameUtils.init()
+    // gameService.init()
   } );
 
   // 시작
-  socket.on( 'start', function( data ) { 
-    gameUtils.start();
+  socket.on( 'start', function( data ) {
+    gameService.start();
 
     io.emit( 'start', gameStatus );
   } );
 
   // 모든 소켓 콜백은 game object 반환
   socket.on( 'card-select', function( data ) {
-
     io.emit( 'start', gameStatus );
-  } )
-  
+  } );
 
   // 접속 종료
   socket.on( 'disconnect', function( id ) {
-    gameUtils.disconnect( id );
+    gameService.disconnect( id );
 
-    io.emit( 'member-list', gameUtils.getMemberList() );
+    io.emit( 'member-list', gameService.getMemberList() );
   } );
 }

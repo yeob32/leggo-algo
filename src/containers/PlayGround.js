@@ -16,9 +16,7 @@ import socketUtil, { initSocket } from '../utils/socketUtil';
 import { saveSession } from '../store/session/actions';
 
 // test
-import { Button } from 'antd'
-
-initSocket( 'http://localhost:3001' );
+import { Button } from 'antd';
 
 const maxUserCount = 4;
 class PlayGround extends Component {
@@ -36,6 +34,8 @@ class PlayGround extends Component {
   }
 
   componentDidMount() {
+    initSocket( 'http://localhost:3001' );
+
     socketUtil().emit( 'member-list' );
     socketUtil().on( 'member-list', data => {
       this.setState( { members: data } );
@@ -56,9 +56,9 @@ class PlayGround extends Component {
     socketUtil().emit( 'start' );
     socketUtil().on( 'start', data => {
       this.setState( {
-        ...data
-      } )
-    } )
+        ...data,
+      } );
+    } );
     console.log( 'start ' );
   };
 
@@ -72,8 +72,8 @@ class PlayGround extends Component {
   };
 
   init = () => {
-    this.props.saveSession( { id: 'kim' , name: 'kim' } )
-  }
+    this.props.saveSession( { id: 'kim', name: 'kim' } );
+  };
 
   render() {
     const { session } = this.props;
@@ -82,17 +82,13 @@ class PlayGround extends Component {
 
     return (
       <MainStructure>
-        <div style={{ width: "90%", maxWidth: "1400px", margin: "0 auto" }}>
+        <div style={{ width: '90%', maxWidth: '1400px', margin: '0 auto' }}>
           <StatusInterface session={session} pileCards={pileCards} members={members} />
 
           <Button onClick={init}>init</Button>
           <br />
-          <ControllPanel
-            deal={deal}
-            start={start}
-            join={join}
-          />
-  
+          <ControllPanel deal={deal} start={start} join={join} />
+
           <br />
 
           <PlayerList userList={members} pileCards={pileCards} />
@@ -110,4 +106,7 @@ const mapDispatchToProps = dispatch => ( {
   saveSession: data => dispatch( saveSession( data ) ),
 } );
 
-export default connect( state => state, mapDispatchToProps )( PlayGround );
+export default connect(
+  state => state,
+  mapDispatchToProps,
+)( PlayGround );
