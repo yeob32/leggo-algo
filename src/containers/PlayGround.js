@@ -58,8 +58,9 @@ class PlayGround extends Component {
       this.setState( {
         ...data,
       } );
+
+      this.props.saveSession( this.state.members.find( mem => mem.id === this.props.session.id ) );
     } );
-    console.log( 'start ' );
   };
 
   join = () => {
@@ -68,30 +69,32 @@ class PlayGround extends Component {
     socketUtil().emit( 'join', id, name );
     socketUtil().on( 'user-list', data => {
       this.setState( { members: data } );
+      this.props.saveSession( this.state.members.find( mem => mem.id === this.props.session.id ) );
     } );
   };
 
-  init = () => {
-    this.props.saveSession( { id: 'kim', name: 'kim' } );
-  };
+  init = () => {};
 
   render() {
     const { session } = this.props;
+    console.log( 'session > ', session );
     const { deal, pileCards, members } = this.state;
     const { init, start, join } = this;
+
+    const host = session.super && session.super.host;
 
     return (
       <MainStructure>
         <div style={{ width: '90%', maxWidth: '1400px', margin: '0 auto' }}>
           <StatusInterface session={session} pileCards={pileCards} members={members} />
 
-          <Button onClick={init}>init</Button>
           <br />
-          <ControllPanel deal={deal} start={start} join={join} />
+
+          <ControllPanel deal={deal} start={start} join={join} host={host} />
 
           <br />
 
-          <PlayerList userList={members} pileCards={pileCards} />
+          <PlayerList members={members} pileCards={pileCards} />
 
           <br />
 

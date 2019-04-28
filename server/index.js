@@ -1,4 +1,5 @@
-const app = require( 'express' )();
+const express = require( 'express' );
+const app = express();
 const server = require( 'http' ).Server( app );
 const cors = require( 'cors' );
 const bodyParser = require( 'body-parser' );
@@ -13,15 +14,17 @@ const gameService = require( './game/gameService' );
 app.use( cors() );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded( { extended: true } ) );
-app.use( sessionConfig );
+// app.use( sessionConfig );
 
-app.use( function( req, res, next ) {
-  if ( !req.session.rds ) {
-    req.session.rds = [];
-  }
+// app.use( express.static( path.join( __dirname, 'public' ) ) );
 
-  next();
-} );
+// app.use( function( req, res, next ) {
+//   // if ( !req.session.rds ) {
+//   //   req.session.rds = [];
+//   // }
+
+//   next();
+// } );
 
 app.use( router );
 
@@ -44,21 +47,11 @@ function onConnect( socket ) {
     socket.broadcast.to( id ).emit( 'my message', msg );
   } );
 
-  socket.on( 'test', function( id, name ) {
-    sessionStore.initSession( 'kim', 'kim' );
-    sessionStore.initSession( 'lee', 'lee' );
-    sessionStore.initSession( 'park', 'park' );
-    io.emit( 'test', sessionStore.getSessionList() );
-  } );
-
   /**
    * 세션은 그냥 세션임 게임 참여 사용자 수와 상관없다.
    * 게임 참여 시 사용자 id, name 받아서 게임 사용자 데이터 새로 만듬
    */
   socket.on( 'join', function( id, name ) {
-    const sessionCount = sessionStore.getSessionList().length;
-    const userId = sessionStore.getSession( id );
-
     const memberList = gameService.getMemberList();
 
     const alreadyJoinCheck = memberList.filter( member => member.id === id ).length === 0;

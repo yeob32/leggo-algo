@@ -49,8 +49,7 @@ class LoginForm extends Component {
 
       const result = await axios.post( 'http://localhost:3001/login', { id, name, password } );
       if ( result.data.code === '200' ) {
-        // redux put
-        this.props.saveSession( { id, name } );
+        this.props.saveSession( result.data.session );
         this.props.history.push( '/play' ); // history.push( '/play' );
       }
     } catch ( error ) {

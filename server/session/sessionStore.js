@@ -1,3 +1,5 @@
+const session = [];
+
 const createSession = ( id, name ) => ( {
   id,
   name,
@@ -13,11 +15,10 @@ const createSession = ( id, name ) => ( {
   turn: false,
 } );
 
-const session = [];
+function saveSession( { id, name } ) {
+  const sessionData = getSession( id );
 
-function initSession( id, name ) {
-  const sessionData = getSession( id )
-  if( sessionData ) {
+  if ( sessionData ) {
     return;
   }
 
@@ -27,6 +28,8 @@ function initSession( id, name ) {
   }
 
   session.push( sessionObject );
+
+  return sessionObject;
 }
 
 function getSession( id ) {
@@ -46,7 +49,8 @@ function updateSession( id ) {
 }
 
 module.exports = {
-  initSession,
+  session,
+  saveSession,
   getSession,
   getSessionList,
   removeSession,

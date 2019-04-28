@@ -5,12 +5,14 @@ import Deck from '../components/Deck';
 
 const ButtonGroup = Button.Group;
 
-const DeckList = ( { decks, pileCards } ) => {
+const DeckList = ( { member, pileCards } ) => {
+  const { deck } = member;
+
   return (
     <div>
       <ButtonGroup>
-        {decks.map( deck => (
-          <Deck deck={deck} piles={pileCards} key={deck.id} />
+        {deck.map( dck => (
+          <Deck member={member} deck={dck} piles={pileCards} key={dck.id} />
         ) )}
       </ButtonGroup>
     </div>
