@@ -13,17 +13,13 @@ class App extends Component {
   }
 
   testSession = () => {
-    this.props.saveSession( { id: 'testId', name: 'testName' } )
+    this.props.saveSession( { id: 'testId', name: 'testName' } );
   };
 
   render() {
     return (
       <MainStructure>
-        {JSON.stringify( this.props.session )}
-        <button type="button" onClick={this.testSession}>
-          test
-        </button>
-        <LoginForm />
+        <LoginForm key="loginForm" />
       </MainStructure>
     );
   }

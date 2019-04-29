@@ -8,15 +8,22 @@ import Footer from '../Footer';
 const { Content } = Layout;
 
 const MainStructure = ( { children } ) => {
-  return (
-    <div>
-      <Layout>
-        <Header />
-        <Content>{children}</Content>
-        <Footer />
-      </Layout>
-    </div>
+  const { key } = children;
+  const useWrapper = key ? '' : 'loginForm';
+
+  const wrapperComponent = useWrapper ? (
+    <Layout>
+      <Header />
+      <Content>{children}</Content>
+      <Footer />
+    </Layout>
+  ) : (
+    <Layout>
+      <Content>{children}</Content>
+    </Layout>
   );
+
+  return wrapperComponent;
 };
 
 export default MainStructure;
