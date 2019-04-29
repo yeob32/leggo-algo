@@ -53,11 +53,9 @@ class PlayGround extends Component {
 
   start = () => {
     // start => 카드분배 => 턴 순회 1분 => 점수
-    socketUtil().emit( 'start' );
+    socketUtil().emit( 'start', this.props.session.super.host );
     socketUtil().on( 'start', data => {
-      this.setState( {
-        ...data,
-      } );
+      this.setState( data );
 
       this.props.saveSession( this.state.members.find( mem => mem.id === this.props.session.id ) );
     } );
@@ -67,17 +65,20 @@ class PlayGround extends Component {
     const { id, name } = this.props.session;
 
     socketUtil().emit( 'join', id, name );
-    socketUtil().on( 'user-list', data => {
+    socketUtil().on( 'member-list', data => {
       this.setState( { members: data } );
       this.props.saveSession( this.state.members.find( mem => mem.id === this.props.session.id ) );
     } );
+
+    if ( !this.props.session.super.host ) {
+      // this.start();
+    }
   };
 
   init = () => {};
 
   render() {
     const { session } = this.props;
-    console.log( 'session > ', session );
     const { deal, pileCards, members } = this.state;
     const { init, start, join } = this;
 

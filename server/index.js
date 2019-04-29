@@ -75,7 +75,10 @@ function onConnect( socket ) {
   socket.on( 'start', function( data ) {
     gameService.start();
 
-    io.emit( 'start', gameStatus );
+    if ( data ) {
+      // socket.broadcast.emit( 'start', gameStatus );
+      io.emit( 'start', gameStatus );
+    }
   } );
 
   // 모든 소켓 콜백은 game object 반환

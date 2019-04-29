@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, Avatar, Row, Col } from 'antd';
+import { Card, Avatar, Row, Col, Icon } from 'antd';
 
 import DeckList from '../containers/DeckList';
 
@@ -18,8 +18,9 @@ const PlayerInfo = member => (
         </Avatar>
       </Col>
       <Col span={12}>
-        <h1>{member.name}</h1>
-        <h1>{member.turn ? 'turn' : ''}</h1>
+        <h1>
+          {member.name} {member.turn && <Icon type="sync" spin />}
+        </h1>
         {/* 만약 user 의 turn 이 true 면  trun 바뀔때마다 members data 받아서 다시 렌더링 */}
       </Col>
     </Row>
@@ -29,7 +30,11 @@ const PlayerInfo = member => (
 const Player = ( { member, pileCards } ) => {
   return (
     <div style={{ padding: '30px' }}>
-      <Card title={PlayerInfo( member )} bordered={false} style={{ width: 300 }}>
+      <Card
+        title={PlayerInfo( member )}
+        bordered={false}
+        style={{ width: 300, borderColor: member.turn ? 'skyblue' : '' }}
+      >
         <DeckList member={member} pileCards={pileCards} />
       </Card>
     </div>

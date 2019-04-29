@@ -25,8 +25,13 @@ class Deck extends React.PureComponent {
     return this.props.member.id === this.props.session.id;
   };
 
+  turn = () => {
+    return this.props.session.turn;
+  };
+
   render() {
     const { deck, piles } = this.props;
+    const myTurn = this.turn();
 
     console.log( 'this.props >>>>> ', this.props );
 
@@ -48,16 +53,22 @@ class Deck extends React.PureComponent {
       const check = this.checkCurrentMember();
 
       let deckContext = '';
+      let trigger = '';
+
       if ( check ) {
         // 내 카드
         deckContext = deck.name;
+        trigger = '';
       } else {
         deckContext = deck.flip ? deck.name : <Icon type="smile" />;
+        if ( myTurn ) {
+          trigger = 'click';
+        }
       }
 
       // file => 색깔 구분
       return (
-        <Popover content={child} title="카드 선택" trigger="click">
+        <Popover content={child} title="카드 선택" trigger={trigger}>
           <Button>{deckContext}</Button>
         </Popover>
       );
