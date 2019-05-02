@@ -152,10 +152,21 @@ const orderStack = () => {
   }
 };
 
+const init = () => {
+  console.log( 'asd' );
+  Game.state = 'ready';
+  Game.deal = 'false';
+  Game.cards = require( './cardData' ).cards;
+  Game.discardHolder = 'ready';
+  Game.pileCards = require( './cardData' ).cards;
+  Game.members = [];
+};
+
 module.exports = {
   createMember,
   initMember,
   start,
   getMemberList,
   disconnect,
+  init,
 };

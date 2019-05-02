@@ -1,11 +1,13 @@
 import { UPDATE } from './actions.js';
 
+import cardData from '../../static/cards';
+
 const initialState = {
   status: 'ready',
   deal: false,
-  cards: [],
-  discardHolder: [],
-  pileCards: [],
+  cards: cardData,
+  discardHolder: [], //
+  pileCards: cardData, // 남은 카드
   members: [],
 };
 

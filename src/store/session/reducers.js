@@ -1,4 +1,4 @@
-import { SAVE, UPDATE, GET, REMOVE } from './actions';
+import { SAVE, UPDATE, GET, REMOVE, INIT } from './actions';
 
 const initialState = {
   id: '',
@@ -20,6 +20,11 @@ export default function session( state = initialState, action ) {
     case SAVE:
       return {
         ...action.session,
+      };
+    case INIT:
+      return {
+        ...action.session,
+        ...state,
       };
     case GET:
       return {

@@ -13,7 +13,7 @@ import ControllPanel from '../components/ControllPanel';
 
 import socketUtil, { initSocket } from '../utils/socketUtil';
 
-import { saveSession } from '../store/session/actions';
+import { saveSession, initSession } from '../store/session/actions';
 
 // test
 import { Button } from 'antd';
@@ -40,6 +40,18 @@ class PlayGround extends Component {
     socketUtil().on( 'member-list', data => {
       this.setState( { members: data } );
     } );
+
+    socketUtil().on( 'start', data => {
+      this.setState( data );
+
+      this.props.saveSession( this.state.members.find( mem => mem.id === this.props.session.id ) );
+    } );
+
+    socketUtil().on( 'init', data => {
+      console.log( 'init !!!!!!!!!' );
+      this.setState( { ...data } );
+      this.props.initSession();
+    } );
   }
 
   componentWillUnmount() {
@@ -54,11 +66,6 @@ class PlayGround extends Component {
   start = () => {
     // start => 카드분배 => 턴 순회 1분 => 점수
     socketUtil().emit( 'start', this.props.session.super.host );
-    socketUtil().on( 'start', data => {
-      this.setState( data );
-
-      this.props.saveSession( this.state.members.find( mem => mem.id === this.props.session.id ) );
-    } );
   };
 
   join = () => {
@@ -75,7 +82,10 @@ class PlayGround extends Component {
     }
   };
 
-  init = () => {};
+  init = () => {
+    console.log( 'front - inint' );
+    socketUtil().emit( 'init' );
+  };
 
   render() {
     const { session } = this.props;
@@ -90,6 +100,11 @@ class PlayGround extends Component {
           <StatusInterface session={session} pileCards={pileCards} members={members} />
 
           <br />
+
+          <Button type="danger">test</Button>
+          <Button type="danger" onClick={init}>
+            init
+          </Button>
 
           <ControllPanel deal={deal} start={start} join={join} host={host} />
 
@@ -108,6 +123,7 @@ class PlayGround extends Component {
 
 const mapDispatchToProps = dispatch => ( {
   saveSession: data => dispatch( saveSession( data ) ),
+  initSession: data => dispatch( initSession() ),
 } );
 
 export default connect(

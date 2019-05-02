@@ -23,6 +23,9 @@ const ControllPanel = ( { deal, start, join, host } ) => {
       <Button type="primary" size="large" onClick={join} style={{ marginRight: '8px' }}>
         참가
       </Button>
+      <Button type="" size="large" style={{ marginRight: '8px' }}>
+        나가기
+      </Button>
     </div>
   );
 };

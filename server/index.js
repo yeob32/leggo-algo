@@ -68,7 +68,9 @@ function onConnect( socket ) {
   } );
 
   socket.on( 'init', function() {
-    // gameService.init()
+    gameService.init();
+
+    io.emit( 'init', gameStatus );
   } );
 
   // 시작
