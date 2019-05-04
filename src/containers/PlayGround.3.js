@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 
+import cardData from '../static/cards';
+
 import PlayerList from './PlayerList';
 import Stack from './Stack';
 import MainStructure from '../components/structure/MainStructure';
@@ -18,69 +20,84 @@ import { Button } from 'antd';
 
 const maxUserCount = 4;
 class PlayGround extends Component {
+  constructor( props ) {
+    super( props );
+
+    this.state = {
+      status: 'ready',
+      deal: false,
+      cards: cardData,
+      discardHolder: [], //
+      pileCards: cardData, // 남은 카드
+      members: [],
+    };
+  }
+
   componentDidMount() {
     initSocket( 'http://localhost:3001' );
 
     socketUtil().emit( 'member-list' );
     socketUtil().on( 'member-list', data => {
       this.props.updateGameStatus( { members: data } );
+      this.setState( { members: data } );
     } );
 
     socketUtil().on( 'start', data => {
-      this.props.updateGameStatus( data );
-      this.saveCurrentSession();
+      this.setState( data );
+
+      const currentUser = getCurrentUser( {
+        members: this.getGameStore().members,
+        sessionId: this.getSessionStore().id,
+      } );
+      this.props.saveSession( currentUser );
+
+      this.props.saveSession(
+        this.state.members.find( mem => mem.id === this.props.sessionReducer.id ),
+      );
     } );
 
     socketUtil().on( 'init', data => {
-      this.props.updateGameStatus( { ...data } );
+      this.setState( { ...data } );
       this.props.initSession();
     } );
+
+    console.log( 'this > ', this );
   }
 
   componentWillUnmount() {
     socketUtil().emit( 'disconnect-user' );
   }
 
-  getGameReducer = () => {
+  getGameStore = () => {
     return this.props.gameReducer;
   };
 
-  getSessionReducer = () => {
+  getSessionStore = () => {
     return this.props.sessionReducer;
   };
 
-  saveCurrentSession = () => {
-    const { members } = this.getGameReducer();
-    const { id } = this.getSessionReducer();
-
-    const currentUser = getCurrentUser( { members, id } );
-
-    this.props.saveSession( currentUser );
-  };
-
   isCrowded = () => {
-    const { members } = this.getGameReducer();
-    const userCount = members.length;
+    const userCount = this.state.members.length;
     return userCount >= maxUserCount;
   };
 
   start = () => {
-    const { auth } = this.getSessionReducer();
-
     // start => 카드분배 => 턴 순회 1분 => 점수
-    socketUtil().emit( 'start', auth.host );
+    socketUtil().emit( 'start', this.props.sessionReducer.super.host );
   };
 
   join = () => {
-    const { id, name, auth } = this.getSessionReducer();
+    const { id, name } = this.props.sessionReducer;
 
     socketUtil().emit( 'join', id, name );
     socketUtil().on( 'member-list', data => {
-      this.props.updateGameStatus( { members: data } );
-      this.saveCurrentSession();
+      this.setState( { members: data } );
+      this.props.saveSession(
+        this.state.members.find( mem => mem.id === this.props.sessionReducer.id ),
+      );
     } );
 
-    if ( !auth.host ) {
+    if ( !this.props.sessionReducer.super.host ) {
       // this.start();
     }
   };
@@ -90,13 +107,13 @@ class PlayGround extends Component {
   };
 
   render() {
-    const sessionReducer = this.getSessionReducer();
-    const gameReducer = this.getGameReducer();
+    const sessionReducer = this.getSessionStore();
+    const gameReducer = this.getGameStore();
 
-    const { deal, pileCards, members, auth } = gameReducer;
+    const { deal, pileCards, members } = this.state;
     const { init, start, join } = this;
 
-    const host = auth && auth.host;
+    const host = sessionReducer.super && sessionReducer.super.host;
 
     return (
       <MainStructure>

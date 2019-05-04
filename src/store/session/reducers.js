@@ -7,7 +7,7 @@ const initialState = {
   score: 0,
   enter: false,
   order: null,
-  super: {
+  auth: {
     host: false,
     check: false, // true면 턴
     hold: false, // true면 턴
@@ -15,7 +15,7 @@ const initialState = {
   turn: false,
 };
 
-export default function session( state = initialState, action ) {
+export default function sessionReducer( state = initialState, action ) {
   switch ( action.type ) {
     case SAVE:
       return {

@@ -78,19 +78,19 @@ import Stack from './Stack.tsx';
 // }
 
 const PlayGround = () => {
-  const [users, setUsers] = useState([]); // 세션정보 따로 뺴야됨, 사용자 들어옴 => 시작 => 카드분배 => 순서대로 ~
-  const [cards, setCards] = useState(cardData);
-  const [discardHolder, setdiscardHolder] = useState([]);
-  const [pileCards, setPileCards] = useState(cardData);
-  const [dealYn, setDealYn] = useState(false);
-  const [gameStatus, setGameStatus] = useState('ready');
+  const [ users, setUsers ] = useState( [] ); // 세션정보 따로 뺴야됨, 사용자 들어옴 => 시작 => 카드분배 => 순서대로 ~
+  const [ cards, setCards ] = useState( cardData );
+  const [ discardHolder, setdiscardHolder ] = useState( [] );
+  const [ pileCards, setPileCards ] = useState( cardData );
+  const [ dealYn, setDealYn ] = useState( false );
+  const [ gameStatus, setGameStatus ] = useState( 'ready' );
 
   const maxUserCount = 4;
 
-  useEffect(() => {
+  useEffect( () => {
     document.title = `Leggg Algo`;
-    console.log('userEffect >>>> ');
-  });
+    console.log( 'userEffect >>>> ' );
+  } );
 
   const setUserData = () => {
     return {
@@ -114,27 +114,27 @@ const PlayGround = () => {
   };
 
   const additionUser = () => {
-    if (isCrowded()) {
+    if ( isCrowded() ) {
       return;
     }
 
-    if (dealYn) {
+    if ( dealYn ) {
       return;
     }
 
-    const userData = users.concat(setUserData());
+    const userData = users.concat( setUserData() );
 
-    setUsers(userData);
+    setUsers( userData );
   };
 
-  const getRandomCards = (maxCardCount, drawCardTemp, drawCardList) => {
-    const randomCard = pileCards[Math.floor(Math.random() * pileCards.length) + 1 - 1];
-    if (drawCardTemp.length < maxCardCount) {
-      if (!drawCardTemp.includes(randomCard) && !drawCardList.includes(randomCard)) {
-        drawCardTemp.push(randomCard);
+  const getRandomCards = ( maxCardCount, drawCardTemp, drawCardList ) => {
+    const randomCard = pileCards[Math.floor( Math.random() * pileCards.length ) + 1 - 1];
+    if ( drawCardTemp.length < maxCardCount ) {
+      if ( !drawCardTemp.includes( randomCard ) && !drawCardList.includes( randomCard ) ) {
+        drawCardTemp.push( randomCard );
       }
 
-      getRandomCards(maxCardCount, drawCardTemp, drawCardList);
+      getRandomCards( maxCardCount, drawCardTemp, drawCardList );
     }
 
     return drawCardTemp;
@@ -142,31 +142,31 @@ const PlayGround = () => {
 
   const dealCard = () => {
     const maxCardCount = isCrowded() ? 3 : 4;
-    if (users.length === 0) {
+    if ( users.length === 0 ) {
       return;
     }
 
-    if (dealYn) {
+    if ( dealYn ) {
       return;
     }
 
-    setDealYn(true);
+    setDealYn( true );
 
     let drawCardList = [];
-    const updateUser = users.map(user => {
-      const tempDrawCards = getRandomCards(maxCardCount, [], drawCardList);
-      drawCardList = drawCardList.concat(tempDrawCards);
+    const updateUser = users.map( user => {
+      const tempDrawCards = getRandomCards( maxCardCount, [], drawCardList );
+      drawCardList = drawCardList.concat( tempDrawCards );
 
       return {
         ...user,
-        deck: user.deck.concat(tempDrawCards),
+        deck: user.deck.concat( tempDrawCards ),
       };
-    });
+    } );
 
-    setdiscardHolder(drawCardList);
-    setPileCards(pileCards.filter(card => !drawCardList.includes(card)));
+    setdiscardHolder( drawCardList );
+    setPileCards( pileCards.filter( card => !drawCardList.includes( card ) ) );
 
-    setUsers(updateUser);
+    setUsers( updateUser );
   };
 
   const shuffle = () => {};

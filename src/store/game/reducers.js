@@ -1,4 +1,4 @@
-import { UPDATE } from './actions.js';
+import { UPDATE, GET_CURRENT_USER } from './actions.js';
 
 import cardData from '../../static/cards';
 
@@ -11,13 +11,13 @@ const initialState = {
   members: [],
 };
 
-export default function game( state = initialState, action ) {
+export default function gameReducer( state = initialState, action ) {
   switch ( action.type ) {
     case UPDATE:
-      return {
-        ...action.payload,
-        state,
-      };
+      return Object.assign( {}, state, action.payload );
+    case GET_CURRENT_USER:
+      return action.payload.members.find( mem => mem.id === action.payload.id );
+
     default:
       return state;
   }

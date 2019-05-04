@@ -4,8 +4,8 @@ import sessionReducer from './session/reducers';
 import gameReducer from './game/reducers';
 
 const rootReducer = combineReducers( {
-  session: sessionReducer,
-  game: gameReducer,
+  sessionReducer,
+  gameReducer,
 } );
 
 export default rootReducer;

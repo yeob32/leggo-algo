@@ -7,7 +7,7 @@ const createSession = ( id, name ) => ( {
   score: 0,
   enter: false,
   order: null,
-  super: {
+  auth: {
     host: false,
     check: false, // true면 턴
     hold: false, // true면 턴
@@ -24,7 +24,7 @@ function saveSession( { id, name } ) {
 
   const sessionObject = createSession( id, name );
   if ( session.length === 0 ) {
-    sessionObject.super.host = true;
+    sessionObject.auth.host = true;
   }
 
   session.push( sessionObject );

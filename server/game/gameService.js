@@ -10,7 +10,7 @@ const createMember = ( id, name ) => ( {
   score: 0,
   enter: false,
   order: null,
-  super: {
+  auth: {
     host: false,
     check: false, // true면 턴
     hold: false, // true면 턴
@@ -22,7 +22,7 @@ const initMember = ( id, name ) => {
   const memberData = createMember( id, name );
   const memberCount = Game.members.length;
   if ( memberCount === 0 ) {
-    memberData.super.host = true;
+    memberData.auth.host = true;
   }
 
   memberData.order = memberCount;
