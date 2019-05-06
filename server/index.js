@@ -60,6 +60,8 @@ function onConnect( socket ) {
     }
 
     io.emit( 'member-list', memberList );
+    io.emit( 'join' );
+    io.emit( 'join-message', { code: 200, name, message: name + '님이 참가함' } );
   } );
 
   // 초기 참여인원 가져와서 렌더링
@@ -86,6 +88,15 @@ function onConnect( socket ) {
   // 모든 소켓 콜백은 game object 반환
   socket.on( 'card-select', function( data ) {
     io.emit( 'start', gameStatus );
+  } );
+
+  socket.on( 'exit', function( data ) {
+    gameService.exit( data );
+
+    console.log( 'session list > ', gameService.getMemberList() );
+
+    io.emit( 'exit', { code: 200, id: data, message: data + '님이 나감' } );
+    io.emit( 'member-list', gameService.getMemberList() );
   } );
 
   // 접속 종료

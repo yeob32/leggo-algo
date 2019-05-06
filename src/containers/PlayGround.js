@@ -11,10 +11,10 @@ import ControllPanel from '../components/ControllPanel';
 
 import socketUtil, { initSocket } from '../utils/socketUtil';
 import { saveSession, initSession } from '../store/session/actions';
-import { updateStatus, getCurrentUser } from '../store/game/actions';
+import { updateStatus } from '../store/game/actions';
 
 // test
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 
 const maxUserCount = 4;
 class PlayGround extends Component {
@@ -31,9 +31,17 @@ class PlayGround extends Component {
       this.saveCurrentSession();
     } );
 
+    socketUtil().on( 'join-message', result => {
+      message.info( result.message );
+    } );
+
     socketUtil().on( 'init', data => {
       this.props.updateGameStatus( { ...data } );
       this.props.initSession();
+    } );
+
+    socketUtil().on( 'exit', result => {
+      message.warning( result.message );
     } );
   }
 
@@ -53,7 +61,9 @@ class PlayGround extends Component {
     const { members } = this.getGameReducer();
     const { id } = this.getSessionReducer();
 
-    const currentUser = getCurrentUser( { members, id } );
+    const currentUser = members.find( mem => mem.id === id );
+
+    console.log( 'currentUser > ', currentUser );
 
     this.props.saveSession( currentUser );
   };
@@ -75,8 +85,7 @@ class PlayGround extends Component {
     const { id, name, auth } = this.getSessionReducer();
 
     socketUtil().emit( 'join', id, name );
-    socketUtil().on( 'member-list', data => {
-      this.props.updateGameStatus( { members: data } );
+    socketUtil().on( 'join', () => {
       this.saveCurrentSession();
     } );
 
@@ -85,7 +94,13 @@ class PlayGround extends Component {
     }
   };
 
+  exit = () => {
+    const { id } = this.getSessionReducer();
+    socketUtil().emit( 'exit', id );
+  };
+
   init = () => {
+    message.info( 'This is a normal message' );
     socketUtil().emit( 'init' );
   };
 
@@ -93,8 +108,9 @@ class PlayGround extends Component {
     const sessionReducer = this.getSessionReducer();
     const gameReducer = this.getGameReducer();
 
-    const { deal, pileCards, members, auth } = gameReducer;
-    const { init, start, join } = this;
+    const { auth } = sessionReducer;
+    const { deal, pileCards, members } = gameReducer;
+    const { init, start, join, exit } = this;
 
     const host = auth && auth.host;
 
@@ -110,7 +126,7 @@ class PlayGround extends Component {
             init
           </Button>
 
-          <ControllPanel deal={deal} start={start} join={join} host={host} />
+          <ControllPanel deal={deal} start={start} join={join} exit={exit} host={host} />
 
           <br />
 
@@ -129,7 +145,6 @@ const mapDispatchToProps = dispatch => ( {
   saveSession: data => dispatch( saveSession( data ) ),
   initSession: () => dispatch( initSession() ),
   updateGameStatus: data => dispatch( updateStatus( data ) ),
-  getCurrentUser: data => dispatch( getCurrentUser( data ) ),
 } );
 
 export default connect(

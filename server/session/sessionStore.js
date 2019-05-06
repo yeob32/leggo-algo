@@ -24,7 +24,8 @@ function saveSession( { id, name } ) {
 
   const sessionObject = createSession( id, name );
   if ( session.length === 0 ) {
-    sessionObject.auth.host = true;
+    // 참가 할 때 방장 여부 결정
+    // sessionObject.auth.host = true;
   }
 
   session.push( sessionObject );

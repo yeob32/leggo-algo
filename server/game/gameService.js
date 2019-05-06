@@ -54,6 +54,10 @@ const getMemberList = () => {
   return Game.members;
 };
 
+const exit = id => {
+  Game.members = Game.members.filter( member => member.id !== id );
+};
+
 const disconnect = id => {
   Game.members = Game.members.filter( member => member.id !== id );
 };
@@ -71,8 +75,6 @@ const dealCard = () => {
   }
 
   let drawCardList = [];
-
-  console.log( 'members >', members );
 
   const updateUser = members.map( user => {
     const tempDrawCards = getRandomCards( maxCardCount, [], drawCardList );
@@ -153,7 +155,6 @@ const orderStack = () => {
 };
 
 const init = () => {
-  console.log( 'asd' );
   Game.state = 'ready';
   Game.deal = 'false';
   Game.cards = require( './cardData' ).cards;
@@ -169,4 +170,5 @@ module.exports = {
   getMemberList,
   disconnect,
   init,
+  exit,
 };
