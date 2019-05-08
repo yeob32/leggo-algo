@@ -16,7 +16,6 @@ import { updateStatus } from '../store/game/actions';
 // test
 import { Button, message } from 'antd';
 
-const maxUserCount = 4;
 class PlayGround extends Component {
   componentDidMount() {
     initSocket( 'http://localhost:3001' );
@@ -63,40 +62,7 @@ class PlayGround extends Component {
 
     const currentUser = members.find( mem => mem.id === id );
 
-    console.log( 'currentUser > ', currentUser );
-
     this.props.saveSession( currentUser );
-  };
-
-  isCrowded = () => {
-    const { members } = this.getGameReducer();
-    const userCount = members.length;
-    return userCount >= maxUserCount;
-  };
-
-  start = () => {
-    const { auth } = this.getSessionReducer();
-
-    // start => 카드분배 => 턴 순회 1분 => 점수
-    socketUtil().emit( 'start', auth.host );
-  };
-
-  join = () => {
-    const { id, name, auth } = this.getSessionReducer();
-
-    socketUtil().emit( 'join', id, name );
-    socketUtil().on( 'join', () => {
-      this.saveCurrentSession();
-    } );
-
-    if ( !auth.host ) {
-      // this.start();
-    }
-  };
-
-  exit = () => {
-    const { id } = this.getSessionReducer();
-    socketUtil().emit( 'exit', id );
   };
 
   init = () => {
@@ -126,7 +92,7 @@ class PlayGround extends Component {
             init
           </Button>
 
-          <ControllPanel deal={deal} start={start} join={join} exit={exit} host={host} />
+          <ControllPanel />
 
           <br />
 
