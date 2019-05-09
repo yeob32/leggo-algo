@@ -93,8 +93,6 @@ function onConnect( socket ) {
   socket.on( 'exit', function( data ) {
     gameService.exit( data );
 
-    console.log( 'session list > ', gameService.getMemberList() );
-
     io.emit( 'exit', { code: 200, id: data, message: data + '님이 나감' } );
     io.emit( 'member-list', gameService.getMemberList() );
   } );

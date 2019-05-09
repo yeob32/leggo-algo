@@ -1,9 +1,8 @@
-export const SAVE = 'SAVE';
-export const UPDATE = 'UPDATE';
-export const GET = 'GET';
-export const REMOVE = 'REMOVE';
+export const SAVE = 'game/SAVE';
+export const UPDATE = 'game/UPDATE';
+export const REMOVE = 'game/REMOVE';
 
-export const INIT = 'INIT';
+export const INIT = 'game/INIT';
 
 export const saveSession = session => {
   return { type: SAVE, session };
@@ -13,8 +12,6 @@ export const initSession = session => {
   return { type: INIT, session };
 };
 
-export const getSession = () => {
-  return {
-    type: GET,
-  };
-};
+export function updateSession( data ) {
+  return { type: UPDATE, data };
+}
