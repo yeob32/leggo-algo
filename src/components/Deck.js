@@ -5,14 +5,6 @@ import { connect } from 'react-redux';
 import { Popconfirm, Popover, message, Icon, Button } from 'antd';
 
 class Deck extends React.PureComponent {
-  constructor( props ) {
-    super( props );
-
-    this.state = {};
-
-    this.checkCurrentMember = this.checkCurrentMember.bind( this );
-  }
-
   confirm = e => {
     message.success( '맞춤' );
   };
@@ -22,18 +14,12 @@ class Deck extends React.PureComponent {
   };
 
   checkCurrentMember = () => {
-    return this.props.member.id === this.props.session.id;
-  };
-
-  turn = () => {
-    return this.props.session.turn;
+    return this.props.member.id === this.props.sessionReducer.id;
   };
 
   render() {
     const { deck, piles } = this.props;
-    const myTurn = this.turn();
-
-    console.log( 'this.props >>>>> ', this.props );
+    const { turn } = this.props.sessionReducer;
 
     const content = piles.map( pile => (
       <Popconfirm
@@ -61,7 +47,7 @@ class Deck extends React.PureComponent {
         trigger = '';
       } else {
         deckContext = deck.flip ? deck.name : <Icon type="smile" />;
-        if ( myTurn ) {
+        if ( turn ) {
           trigger = 'click';
         }
       }

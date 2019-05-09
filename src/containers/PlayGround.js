@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import PlayerList from './PlayerList';
 import Stack from './Stack';
@@ -19,6 +20,7 @@ import { Button, message } from 'antd';
 const maxUserCount = 4;
 class PlayGround extends Component {
   componentDidMount() {
+    this.checkSession();
     initSocket( 'http://localhost:3001' );
 
     socketUtil().emit( 'member-list' );
@@ -49,6 +51,13 @@ class PlayGround extends Component {
     socketUtil().emit( 'disconnect-user' );
   }
 
+  checkSession = () => {
+    const sessionReducer = this.getSessionReducer();
+    if ( !sessionReducer || !sessionReducer.id ) {
+      this.props.history.push( '/' );
+    }
+  };
+
   getGameReducer = () => {
     return this.props.gameReducer;
   };
@@ -66,12 +75,6 @@ class PlayGround extends Component {
     console.log( 'currentUser > ', currentUser );
 
     this.props.saveSession( currentUser );
-  };
-
-  isCrowded = () => {
-    const { members } = this.getGameReducer();
-    const userCount = members.length;
-    return userCount >= maxUserCount;
   };
 
   start = () => {
@@ -147,7 +150,9 @@ const mapDispatchToProps = dispatch => ( {
   updateGameStatus: data => dispatch( updateStatus( data ) ),
 } );
 
-export default connect(
-  state => state,
-  mapDispatchToProps,
-)( PlayGround );
+export default withRouter(
+  connect(
+    state => state,
+    mapDispatchToProps,
+  )( PlayGround ),
+);

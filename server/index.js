@@ -61,6 +61,7 @@ function onConnect( socket ) {
 
     io.emit( 'member-list', memberList );
     io.emit( 'join' );
+    // 뭔가 message emit 을 공통으로 만들까
     io.emit( 'join-message', { code: 200, name, message: name + '님이 참가함' } );
   } );
 
