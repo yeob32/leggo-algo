@@ -13,7 +13,7 @@ class Stack extends React.Component {
   }
 
   render() {
-    const { pileCards, session } = this.props;
+    const { pileCards } = this.props;
 
     return (
       <Card title="남은 카드">

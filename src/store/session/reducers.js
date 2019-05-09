@@ -1,4 +1,4 @@
-import { SAVE, UPDATE, GET, REMOVE, INIT } from './actions';
+import { SAVE, UPDATE, REMOVE, INIT } from './actions';
 
 const initialState = {
   id: '',
@@ -23,13 +23,18 @@ export default function sessionReducer( state = initialState, action ) {
       };
     case INIT:
       return {
-        ...action.session,
-        ...state,
+        ...initialState,
+        id: state.id,
+        name: state.name,
       };
-    case GET:
-      return {
-        ...state.payload,
-      };
+    case UPDATE:
+      if ( !action.data.members || action.data.members.length === 0 ) {
+        return state;
+      }
+
+      return action.data.members.find( member => member.id === state.id )
+        ? action.data.members.find( member => member.id === state.id )
+        : state;
     case REMOVE:
       return {
         session: state.messages.filter( message => message.timestamp !== action.meta.timestamp ),

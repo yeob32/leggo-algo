@@ -19,7 +19,6 @@ router.post( '/login', function( req, res ) {
     res.json( { code: '400', message: 'fail', detail: 'aleady signed' } );
   } else {
     const result = sessionStore.saveSession( { id, name } );
-    console.log( 'result > ', result );
     res.json( { code: '200', message: 'success', test: 'test!!! ', session: result } );
   }
 

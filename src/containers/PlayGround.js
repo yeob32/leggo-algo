@@ -11,30 +11,30 @@ import StatusInterface from '../components/StatusInterface';
 import ControllPanel from '../components/ControllPanel';
 
 import socketUtil, { initSocket } from '../utils/socketUtil';
-import { saveSession, initSession } from '../store/session/actions';
+import { saveSession, initSession, updateSession } from '../store/session/actions';
 import { updateStatus } from '../store/game/actions';
 
-// test
-import { Button, message } from 'antd';
+import { message, Row, Col } from 'antd';
 
-const maxUserCount = 4;
 class PlayGround extends Component {
   componentDidMount() {
     this.checkSession();
     initSocket( 'http://localhost:3001' );
 
-    socketUtil().emit( 'member-list' );
-    socketUtil().on( 'member-list', data => {
+    socketUtil().emit( 'get-member-list' );
+    socketUtil().on( 'get-member-list-result', data => {
       this.props.updateGameStatus( { members: data } );
+      this.props.updateSession( data );
     } );
 
     socketUtil().on( 'start', data => {
       this.props.updateGameStatus( data );
-      this.saveCurrentSession();
     } );
 
-    socketUtil().on( 'join-message', result => {
-      message.info( result.message );
+    socketUtil().on( 'join-result', data => {
+      this.props.updateGameStatus( { members: data.item } );
+      this.props.updateSession( data );
+      message.info( data.message );
     } );
 
     socketUtil().on( 'init', data => {
@@ -42,13 +42,26 @@ class PlayGround extends Component {
       this.props.initSession();
     } );
 
-    socketUtil().on( 'exit', result => {
-      message.warning( result.message );
+    socketUtil().on( 'exit-result', data => {
+      this.props.initSession();
+      this.props.updateGameStatus( { members: data.item } );
+      this.props.updateSession( data );
+
+      message.warning( data.message );
+    } );
+
+    socketUtil().on( 'disconnect-result', data => {
+      console.log( 'this is disconnect-result' );
+      this.props.updateGameStatus( { members: data } );
+
+      message.warning( 'aㅜ지 !!!' );
     } );
   }
 
   componentWillUnmount() {
-    socketUtil().emit( 'disconnect-user' );
+    console.log( 'componentWillUnmount' );
+    socketUtil().emit( 'exit', this.props.sessionReducer.id );
+    socketUtil().emit( 'disconnect', this.props.sessionReducer.id );
   }
 
   checkSession = () => {
@@ -66,44 +79,24 @@ class PlayGround extends Component {
     return this.props.sessionReducer;
   };
 
+  updateSession = members => {
+    if ( !members || members.length === 0 ) {
+      return;
+    }
+
+    this.props.dispatch( { type: 'session/UPDATE', data: members } );
+  };
+
   saveCurrentSession = () => {
     const { members } = this.getGameReducer();
     const { id } = this.getSessionReducer();
 
     const currentUser = members.find( mem => mem.id === id );
 
-    console.log( 'currentUser > ', currentUser );
-
     this.props.saveSession( currentUser );
   };
 
-  start = () => {
-    const { auth } = this.getSessionReducer();
-
-    // start => 카드분배 => 턴 순회 1분 => 점수
-    socketUtil().emit( 'start', auth.host );
-  };
-
-  join = () => {
-    const { id, name, auth } = this.getSessionReducer();
-
-    socketUtil().emit( 'join', id, name );
-    socketUtil().on( 'join', () => {
-      this.saveCurrentSession();
-    } );
-
-    if ( !auth.host ) {
-      // this.start();
-    }
-  };
-
-  exit = () => {
-    const { id } = this.getSessionReducer();
-    socketUtil().emit( 'exit', id );
-  };
-
-  init = () => {
-    message.info( 'This is a normal message' );
+  initTest = () => {
     socketUtil().emit( 'init' );
   };
 
@@ -111,33 +104,28 @@ class PlayGround extends Component {
     const sessionReducer = this.getSessionReducer();
     const gameReducer = this.getGameReducer();
 
-    const { auth } = sessionReducer;
-    const { deal, pileCards, members } = gameReducer;
-    const { init, start, join, exit } = this;
-
-    const host = auth && auth.host;
+    const { pileCards, members } = gameReducer;
 
     return (
       <MainStructure>
         <div style={{ width: '90%', maxWidth: '1400px', margin: '0 auto' }}>
-          <StatusInterface session={sessionReducer} pileCards={pileCards} members={members} />
-
-          <br />
-
-          <Button type="danger">test</Button>
-          <Button type="danger" onClick={init}>
-            init
-          </Button>
-
-          <ControllPanel deal={deal} start={start} join={join} exit={exit} host={host} />
-
-          <br />
-
-          <PlayerList members={members} pileCards={pileCards} />
-
-          <br />
-
-          <Stack pileCards={pileCards} />
+          <button type="button" onClick={this.initTest} value="teststet" />
+          <Row style={{ margin: '10px 0 10px 0' }}>
+            <Col>
+              <StatusInterface session={sessionReducer} pileCards={pileCards} members={members} />
+            </Col>
+          </Row>
+          <Row style={{ margin: '10px 0 10px 0' }}>
+            <Col>
+              <ControllPanel />
+            </Col>
+          </Row>
+          <Row style={{ margin: '10px 0 10px 0' }}>
+            <PlayerList members={members} pileCards={pileCards} />
+          </Row>
+          <Row style={{ margin: '10px 0 10px 0' }}>
+            <Stack pileCards={pileCards} />
+          </Row>
         </div>
       </MainStructure>
     );
@@ -148,6 +136,7 @@ const mapDispatchToProps = dispatch => ( {
   saveSession: data => dispatch( saveSession( data ) ),
   initSession: () => dispatch( initSession() ),
   updateGameStatus: data => dispatch( updateStatus( data ) ),
+  updateSession: data => dispatch( updateSession( data ) ),
 } );
 
 export default withRouter(

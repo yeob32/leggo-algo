@@ -129,12 +129,12 @@ const orderStack = () => {
     // const currentOrderUser = Game.members[order];
     // currentOrderUser.turn = true;
 
-    console.log(
-      'order > %s , currentOrderUser > %s, restCount > %s ',
-      order,
-      Game.members[order],
-      count,
-    );
+    // console.log(
+    //   'order > %s , currentOrderUser > %s, restCount > %s ',
+    //   order,
+    //   Game.members[order],
+    //   count,
+    // );
 
     // currentOrderUser.turn = true;
     // Game.members[order] = currentOrderUser;
