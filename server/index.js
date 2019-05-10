@@ -37,7 +37,6 @@ io.on( 'connection', onConnect );
 const allClients = [];
 
 function onConnect( socket ) {
-  // console.log( 'socket > ', socket );
   allClients.push( socket );
 
   socket.on( 'test', function( data ) {
@@ -53,42 +52,45 @@ function onConnect( socket ) {
   } );
 
   /**
-   * 세션은 그냥 세션임 게임 참여 사용자 수와 상관없다.
-   * 게임 참여 시 사용자 id, name 받아서 게임 사용자 데이터 새로 만듬
+   **************
    */
-  socket.on( 'join', function( session ) {
-    const memberList = gameService.getMemberList();
 
-    const alreadyJoinCheck = memberList.filter( member => member.id === session.id ).length === 0;
-    if ( alreadyJoinCheck ) {
-      gameService.initMember( session.id, session.name );
+  // 게임 상태 반환
+  socket.on( 'get-game-status', function() {
+    io.emit( 'get-game-status-result', gameStatus );
+  } );
+
+  // 참여
+  socket.on( 'join', function( session ) {
+    if ( !gameService.checkAleadyJoinMemeber( session ) ) {
+      return;
     }
 
-    // 뭔가 message emit 을 공통으로 만들까
-    io.emit( 'join-result', { code: 200, item: memberList, message: session.name + '님이 참가함' } );
-  } );
+    gameService.initMember( session.id, session.name );
 
-  // 초기 참여인원 가져와서 렌더링
-  socket.on( 'get-member-list', function() {
-    io.emit( 'get-member-list-result', gameService.getMemberList() );
-  } );
-
-  socket.on( 'init', function() {
-    // gameService.init();
-
-    socket.emit( 'init-test1', 'this is socket.emit' );
-    io.emit( 'init-test2', 'this is io.emit' );
-    // io.emit( 'init', gameStatus );
+    io.emit( 'join-result', {
+      code: 200,
+      item: gameStatus,
+      message: session.name + '님이 참가함',
+    } );
   } );
 
   // 시작
   socket.on( 'start', function( data ) {
     gameService.start();
 
-    if ( data ) {
-      // socket.broadcast.emit( 'start', gameStatus );
-      io.emit( 'start', gameStatus );
-    }
+    io.emit( 'start', gameStatus );
+  } );
+
+  // 나가기
+  socket.on( 'exit', function( data ) {
+    gameService.exit( data );
+
+    io.emit( 'exit-result', {
+      code: 200,
+      item: gameStatus,
+      message: data + '님이 나감',
+    } );
   } );
 
   // 모든 소켓 콜백은 game object 반환
@@ -96,22 +98,14 @@ function onConnect( socket ) {
     io.emit( '', gameStatus );
   } );
 
-  socket.on( 'exit', function( data ) {
-    gameService.exit( data );
-
-    io.emit( 'exit-result', {
-      code: 200,
-      item: gameService.getMemberList(),
-      message: data + '님이 나감',
-    } );
-  } );
-
   // 접속 종료
   socket.on( 'disconnect', function() {
     console.log( 'Got disconnect! > ' );
+
+    socket.disconnect( 0 );
     const i = allClients.indexOf( socket );
     allClients.splice( i, 1 );
 
-    io.emit( 'disconnect-result', gameService.getMemberList() );
+    io.emit( 'disconnect-result', gameStatus );
   } );
 }

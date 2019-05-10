@@ -21,10 +21,10 @@ class PlayGround extends Component {
     this.checkSession();
     initSocket( 'http://localhost:3001' );
 
-    socketUtil().emit( 'get-member-list' );
-    socketUtil().on( 'get-member-list-result', data => {
-      this.props.updateGameStatus( { members: data } );
-      this.props.updateSession( data );
+    socketUtil().emit( 'get-game-status-result' );
+    socketUtil().on( 'get-game-status-result', data => {
+      this.props.updateGameStatus( data );
+      this.props.updateSession( data.item );
     } );
 
     socketUtil().on( 'start', data => {
@@ -32,77 +32,52 @@ class PlayGround extends Component {
     } );
 
     socketUtil().on( 'join-result', data => {
-      this.props.updateGameStatus( { members: data.item } );
+      this.props.updateGameStatus( data.item );
       this.props.updateSession( data );
       message.info( data.message );
     } );
 
-    socketUtil().on( 'init', data => {
-      this.props.updateGameStatus( { ...data } );
-      this.props.initSession();
-    } );
-
     socketUtil().on( 'exit-result', data => {
       this.props.initSession();
-      this.props.updateGameStatus( { members: data.item } );
-      this.props.updateSession( data );
+      this.props.updateGameStatus( data.item );
+      this.props.updateSession( data.item );
 
       message.warning( data.message );
     } );
 
     socketUtil().on( 'disconnect-result', data => {
-      console.log( 'this is disconnect-result' );
-      this.props.updateGameStatus( { members: data } );
+      this.props.updateGameStatus( data );
 
-      message.warning( 'aㅜ지 !!!' );
+      message.warn( 'aㅜ지 !!!' );
     } );
   }
 
   componentWillUnmount() {
-    console.log( 'componentWillUnmount' );
     socketUtil().emit( 'exit', this.props.sessionReducer.id );
     socketUtil().emit( 'disconnect', this.props.sessionReducer.id );
   }
 
+  detectDisconnectBeforeUnload = () => {
+    alert( 'detectDisconnectBeforeUnload' );
+  };
+
+  setupBeforeUnloadListener = () => {
+    window.addEventListener( 'beforeunload', ev => {
+      ev.preventDefault();
+      return this.detectDisconnectBeforeUnload();
+    } );
+  };
+
   checkSession = () => {
-    const sessionReducer = this.getSessionReducer();
+    const sessionReducer = this.props.sessionReducer;
     if ( !sessionReducer || !sessionReducer.id ) {
       this.props.history.push( '/' );
     }
   };
 
-  getGameReducer = () => {
-    return this.props.gameReducer;
-  };
-
-  getSessionReducer = () => {
-    return this.props.sessionReducer;
-  };
-
-  updateSession = members => {
-    if ( !members || members.length === 0 ) {
-      return;
-    }
-
-    this.props.dispatch( { type: 'session/UPDATE', data: members } );
-  };
-
-  saveCurrentSession = () => {
-    const { members } = this.getGameReducer();
-    const { id } = this.getSessionReducer();
-
-    const currentUser = members.find( mem => mem.id === id );
-
-    this.props.saveSession( currentUser );
-  };
-
-  initTest = () => {
-    socketUtil().emit( 'init' );
-  };
-
   render() {
-    const sessionReducer = this.getSessionReducer();
-    const gameReducer = this.getGameReducer();
+    const sessionReducer = this.props.sessionReducer;
+    const gameReducer = this.props.gameReducer;
 
     const { pileCards, members } = gameReducer;
 

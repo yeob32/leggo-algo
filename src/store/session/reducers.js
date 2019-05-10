@@ -29,12 +29,12 @@ export default function sessionReducer( state = initialState, action ) {
       };
     case UPDATE:
       if ( !action.data.members || action.data.members.length === 0 ) {
-        return state;
+        return initialState;
       }
 
       return action.data.members.find( member => member.id === state.id )
         ? action.data.members.find( member => member.id === state.id )
-        : state;
+        : initialState;
     case REMOVE:
       return {
         session: state.messages.filter( message => message.timestamp !== action.meta.timestamp ),

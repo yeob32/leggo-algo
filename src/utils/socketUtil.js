@@ -7,6 +7,10 @@ export function initSocket( url ) {
   socket = socketIOClient( url );
 }
 
+export function closeSocket() {
+  socket = null;
+}
+
 export default function() {
   return socket;
 }

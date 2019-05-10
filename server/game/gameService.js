@@ -54,6 +54,14 @@ const getMemberList = () => {
   return Game.members;
 };
 
+const checkAleadyJoinMember = session => {
+  return Game.members.filter( member => member.id === session.id ).length === 0;
+};
+
+const findJoinMember = session => {
+  return Game.members.find( member => member.id === session.id );
+};
+
 const exit = id => {
   Game.members = Game.members.filter( member => member.id !== id );
 };
