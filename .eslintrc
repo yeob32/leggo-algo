@@ -28,7 +28,8 @@
     "jsx-a11y/anchor-is-valid": 0,
     "import/extensions": 0,
     "no-underscore-dangle": 0,
-    "class-methods-use-this": 0
+    "class-methods-use-this": 0,
+    "react/jsx-max-props-per-line": [1, {}]
   },
   "env": {
     "browser": true
