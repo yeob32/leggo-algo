@@ -15,17 +15,19 @@ class ControllPanel extends React.Component {
 
   join = () => {
     const { id, name, enter } = this.props.sessionReducer;
+    const { deal } = this.props.gameReducer;
 
     if ( enter ) {
       message.warn( '이미 참가함' );
       return;
     }
 
+    if ( deal ) {
+      message.warn( '게임 중에는 참가 못함' );
+      return;
+    }
+
     socketUtil().emit( 'join', { id, name } );
-    // socketUtil().on( 'member-list', data => {
-    // this.props.dispatch( { type: 'UPDATE', data: { members: data } } );
-    // this.saveCurrentSession();
-    // } );
   };
 
   exit = () => {
@@ -45,34 +47,41 @@ class ControllPanel extends React.Component {
     socketUtil().emit( 'exit', id );
   };
 
-  saveCurrentSession = () => {
-    const { members } = this.props.gameReducer;
-    const { id } = this.props.sessionReducer;
-
-    const currentUser = members.find( mem => mem.id === id );
-
-    this.props.dispatch( { type: 'session/SAVE', session: currentUser } );
-  };
-
   render() {
-    const { host } = this.props.sessionReducer;
+    const { auth } = this.props.sessionReducer;
     const { deal } = this.props.gameReducer;
     const { start, join, exit } = this;
-    const showButton = host && !deal;
+
+    const showButton = auth.host && !deal;
 
     return (
       <div>
         {showButton ? (
-          <Button type="primary" size="large" onClick={start} style={{ marginRight: '8px' }}>
+          <Button
+            type="primary"
+            size="large"
+            onClick={start}
+            style={{ marginRight: '8px' }}
+          >
             시작
           </Button>
         ) : (
           ''
         )}
-        <Button type="primary" size="large" onClick={join} style={{ marginRight: '8px' }}>
+        <Button
+          type="primary"
+          size="large"
+          onClick={join}
+          style={{ marginRight: '8px' }}
+        >
           참가
         </Button>
-        <Button type="" onClick={exit} size="large" style={{ marginRight: '8px' }}>
+        <Button
+          type=""
+          onClick={exit}
+          size="large"
+          style={{ marginRight: '8px' }}
+        >
           나가기
         </Button>
       </div>

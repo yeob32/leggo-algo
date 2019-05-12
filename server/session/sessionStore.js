@@ -9,6 +9,7 @@ const createSession = ( id, name ) => ( {
   order: null,
   auth: {
     host: false,
+    over: false, // 랜덤 카드 선택
     check: false, // true면 턴
     hold: false, // true면 턴
   },

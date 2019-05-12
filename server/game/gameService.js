@@ -62,6 +62,17 @@ const findJoinMember = session => {
   return Game.members.find( member => member.id === session.id );
 };
 
+const randomCardAction = id => {
+  const pileCard = Game.pileCards[0];
+  Game.members.forEach( member => {
+    if ( member.id === id ) {
+      member.deck.push( pileCard );
+    }
+
+    return member;
+  } );
+};
+
 const exit = id => {
   Game.members = Game.members.filter( member => member.id !== id );
 };
@@ -179,4 +190,6 @@ module.exports = {
   disconnect,
   init,
   exit,
+  checkAleadyJoinMember,
+  findJoinMember,
 };

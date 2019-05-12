@@ -1,9 +1,10 @@
 import React, { ReactNode } from 'react';
 
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout } from 'antd';
 
 import Header from '../Header';
 import Footer from '../Footer';
+import RightSider from '../RightSider';
 
 const { Content } = Layout;
 
@@ -14,8 +15,13 @@ const MainStructure = ( { children } ) => {
   const wrapperComponent = useWrapper ? (
     <Layout>
       <Header />
-      <Content>{children}</Content>
-      <Footer />
+      <Layout>
+        <Layout style={{ padding: '0 24px 24px' }}>
+          <Content>{children}</Content>
+          <Footer />
+        </Layout>
+        <RightSider />
+      </Layout>
     </Layout>
   ) : (
     <Layout>

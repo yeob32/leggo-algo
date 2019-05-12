@@ -29,10 +29,6 @@ class LoginForm extends Component {
     this.handleSubmit = this.handleSubmit.bind( this );
   }
 
-  componentDidMount( props ) {
-    console.log( 'props > ', props );
-  }
-
   info = () => {
     message.info( 'This is a normal message' );
   };

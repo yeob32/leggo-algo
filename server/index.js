@@ -56,23 +56,25 @@ function onConnect( socket ) {
    */
 
   // 게임 상태 반환
-  socket.on( 'get-game-status', function() {
-    io.emit( 'get-game-status-result', gameStatus );
+  socket.on( 'game-status', function() {
+    io.emit( 'game-status', { item: gameStatus } );
   } );
 
   // 참여
   socket.on( 'join', function( session ) {
-    if ( !gameService.checkAleadyJoinMemeber( session ) ) {
+    if ( !gameService.checkAleadyJoinMember( session ) ) {
       return;
     }
 
     gameService.initMember( session.id, session.name );
 
-    io.emit( 'join-result', {
+    socket.emit( 'join-result', {
       code: 200,
       item: gameStatus,
       message: session.name + '님이 참가함',
     } );
+
+    io.emit( 'game-status', { item: gameStatus, message: session.name + '님이 참가함' } );
   } );
 
   // 시작
@@ -83,14 +85,25 @@ function onConnect( socket ) {
   } );
 
   // 나가기
-  socket.on( 'exit', function( data ) {
-    gameService.exit( data );
+  socket.on( 'exit', function( session ) {
+    gameService.exit( session.id );
 
-    io.emit( 'exit-result', {
+    socket.emit( 'exit-result', {
       code: 200,
       item: gameStatus,
-      message: data + '님이 나감',
+      message: session.name + '님이 나감',
     } );
+    io.emit( 'game-status', { item: gameStatus, message: session.name + '님이 나감' } );
+  } );
+
+  socket.on( 'action', function( id ) {
+    gameService.randomCardAction( id );
+
+    // 다음 액션 체크 ex) 상대 카드 뒤집기, 턴 종료
+    // 점수 계산
+    // 다음 턴
+
+    io.emit( 'game-status', gameStatus );
   } );
 
   // 모든 소켓 콜백은 game object 반환
@@ -99,13 +112,13 @@ function onConnect( socket ) {
   } );
 
   // 접속 종료
-  socket.on( 'disconnect', function() {
-    console.log( 'Got disconnect! > ' );
+  // socket.on( 'disconnect', function() {
+  //   console.log( 'Got disconnect! > ' );
 
-    socket.disconnect( 0 );
-    const i = allClients.indexOf( socket );
-    allClients.splice( i, 1 );
+  //   socket.disconnect( 0 );
+  //   const i = allClients.indexOf( socket );
+  //   allClients.splice( i, 1 );
 
-    io.emit( 'disconnect-result', gameStatus );
-  } );
+  //   io.emit( 'disconnect-result', gameStatus );
+  // } );
 }

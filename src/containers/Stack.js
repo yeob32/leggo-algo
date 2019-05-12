@@ -6,14 +6,8 @@ import { Card } from 'antd';
 import Cards from '../components/Card';
 
 class Stack extends React.Component {
-  constructor( props ) {
-    super( props );
-
-    this.state = {};
-  }
-
   render() {
-    const { pileCards } = this.props;
+    const { pileCards } = this.props.gameReducer;
 
     return (
       <Card title="남은 카드">

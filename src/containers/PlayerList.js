@@ -3,16 +3,18 @@ import React from 'react';
 import { Row, Col, Card } from 'antd';
 import Player from '../components/Player';
 
-const PlayerList = ( { members, pileCards } ) => {
+const PlayerList = ( { gameStatus } ) => {
+  const Players =
+    gameStatus.members &&
+    gameStatus.members.map( member => (
+      <Col span={12} key={member.id}>
+        <Player member={member} pileCards={gameStatus.pileCards} />
+      </Col>
+    ) );
+
   return (
     <Card title="플레이어">
-      <Row>
-        {members.map( ( member, index ) => (
-          <Col span={12} key={member.id}>
-            <Player member={member} pileCards={pileCards} />
-          </Col>
-        ) )}
-      </Row>
+      <Row>{Players}</Row>
     </Card>
   );
 };

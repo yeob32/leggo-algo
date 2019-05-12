@@ -31,7 +31,13 @@ router.post( '/login', function( req, res ) {
   // }
 } );
 
-router.get( '/users', function( req, res ) {
+router.get( '/me', function( req, res ) {
+  sessionStore.getSessionList();
+  res.json( { code: 200, item: req.session } );
+} );
+
+// redis session
+router.get( '/user', function( req, res ) {
   res.json( { session: req.session } );
 } );
 

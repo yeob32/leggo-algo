@@ -1,8 +1,8 @@
-export const SAVE = 'game/SAVE';
-export const UPDATE = 'game/UPDATE';
-export const REMOVE = 'game/REMOVE';
+export const SAVE = 'session/SAVE';
+export const UPDATE = 'session/UPDATE';
+export const REMOVE = 'session/REMOVE';
 
-export const INIT = 'game/INIT';
+export const INIT = 'session/INIT';
 
 export const saveSession = session => {
   return { type: SAVE, session };

@@ -7,19 +7,22 @@ import { connect } from 'react-redux';
 
 import { saveSession } from './store/session/actions';
 
+import axios from 'axios';
+
 class App extends Component {
   componentDidMount() {
-    saveSession( { id: 'testId', name: 'testName' } );
-  }
+    axios.get();
 
-  testSession = () => {
     this.props.saveSession( { id: 'testId', name: 'testName' } );
-  };
+  }
 
   render() {
     return (
       <MainStructure>
-        <LoginForm key="loginForm" />
+        <LoginForm
+          key="loginForm"
+          test="test"
+        />
       </MainStructure>
     );
   }

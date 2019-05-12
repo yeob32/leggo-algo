@@ -32,9 +32,10 @@ export default function sessionReducer( state = initialState, action ) {
         return initialState;
       }
 
+      // updateSession => 다른유저가 요청시에도 탄다고
       return action.data.members.find( member => member.id === state.id )
         ? action.data.members.find( member => member.id === state.id )
-        : initialState;
+        : state;
     case REMOVE:
       return {
         session: state.messages.filter( message => message.timestamp !== action.meta.timestamp ),
