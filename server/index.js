@@ -93,6 +93,8 @@ function onConnect( socket ) {
     const { id, targetId, cardId } = data;
     let message = '';
 
+    console.log( 'action > ', type, data );
+
     switch ( type ) {
       case 'random': // 랜덤카드
         gameService.randomCardAction( id );

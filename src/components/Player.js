@@ -9,14 +9,14 @@ const colorList = [ '#f56a00', '#7265e6', '#ffbf00', '#00a2ae' ];
 
 const Player = ( { member, pileCards } ) => {
   const getRandomCard = id => {
+    console.log( 'getRandomCard > id > ', id );
     if ( pileCards ) {
-      return pileCards[0];
+      socketUtils().emit( 'action', 'random', id );
+      // return pileCards[0];
     }
-
-    socketUtils().emit( 'action', 'random', id );
   };
 
-  const PlayerInfo = (
+  const PlayerInfo = () => (
     <div>
       <Row>
         <Col span={12}>
@@ -38,7 +38,7 @@ const Player = ( { member, pileCards } ) => {
             {member.turn ? (
               <Button
                 type="primary"
-                onClick={getRandomCard( member.id )}
+                onClick={() => getRandomCard( member.id )}
               >
                 랜덤 카드
               </Button>
@@ -55,7 +55,7 @@ const Player = ( { member, pileCards } ) => {
   return (
     <div style={{ padding: '30px' }}>
       <Card
-        title={PlayerInfo( member, pileCards )}
+        title={PlayerInfo()}
         bordered={false}
         style={{ width: 300, borderColor: member.turn ? 'skyblue' : '' }}
       >

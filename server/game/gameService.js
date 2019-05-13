@@ -68,7 +68,7 @@ const randomCardAction = id => {
     }
   } );
 
-  return pileCard;
+  Game.pileCards = Game.pileCards.filter( card => card.id !== pileCard.id );
 };
 
 const updateAuthAction = ( id, data ) => {

@@ -10,12 +10,6 @@ import { saveSession } from './store/session/actions';
 import axios from 'axios';
 
 class App extends Component {
-  componentDidMount() {
-    axios.get();
-
-    this.props.saveSession( { id: 'testId', name: 'testName' } );
-  }
-
   render() {
     return (
       <MainStructure>

@@ -7,8 +7,14 @@ const PlayerList = ( { gameStatus } ) => {
   const Players =
     gameStatus.members &&
     gameStatus.members.map( member => (
-      <Col span={12} key={member.id}>
-        <Player member={member} pileCards={gameStatus.pileCards} />
+      <Col
+        span={12}
+        key={member.id}
+      >
+        <Player
+          member={member}
+          pileCards={gameStatus.pileCards}
+        />
       </Col>
     ) );
 

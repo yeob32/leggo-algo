@@ -28,7 +28,12 @@ class Deck extends React.PureComponent {
         onCancel={this.cancel}
         okText="Yes"
         cancelText="No"
-        icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+        icon={(
+          <Icon
+            type="question-circle-o"
+            style={{ color: 'red' }}
+          />
+)}
         key={pile.id}
       >
         <Button key={pile.id}>{pile.name}</Button>
@@ -54,7 +59,11 @@ class Deck extends React.PureComponent {
 
       // file => 색깔 구분
       return (
-        <Popover content={child} title="카드 선택" trigger={trigger}>
+        <Popover
+          content={child}
+          title="카드 선택"
+          trigger={trigger}
+        >
           <Button>{deckContext}</Button>
         </Popover>
       );

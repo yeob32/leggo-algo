@@ -31,7 +31,12 @@ const Card = ( { card } ) => {
       onCancel={cancel}
       okText="Yes"
       cancelText="No"
-      icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+      icon={(
+        <Icon
+          type="question-circle-o"
+          style={{ color: 'red' }}
+        />
+)}
     >
       <Button>
         <Icon type="question" />

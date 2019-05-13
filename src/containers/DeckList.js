@@ -12,7 +12,12 @@ const DeckList = ( { member, pileCards } ) => {
     <div>
       <ButtonGroup>
         {deck.map( dck => (
-          <Deck member={member} deck={dck} piles={pileCards} key={dck.id} />
+          <Deck
+            member={member}
+            deck={dck}
+            piles={pileCards}
+            key={dck.id}
+          />
         ) )}
       </ButtonGroup>
     </div>
