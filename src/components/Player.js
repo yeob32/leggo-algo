@@ -13,12 +13,7 @@ const Player = ( { member, pileCards } ) => {
       return pileCards[0];
     }
 
-    socketUtils().emit( 'action', id );
-
-    socketUtils().on( 'get-random-pile-card', data => {
-      // redux update => session, game
-      // 랜덤 카드 뽑기 여부 체크 => 뽑았으면 다음 액션 실행 가능
-    } );
+    socketUtils().emit( 'action', 'random', id );
   };
 
   const PlayerInfo = (

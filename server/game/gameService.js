@@ -48,8 +48,6 @@ const action = type => {
   orderStack();
 };
 
-const setMember = id => {};
-
 const getMemberList = () => {
   return Game.members;
 };
@@ -68,8 +66,30 @@ const randomCardAction = id => {
     if ( member.id === id ) {
       member.deck.push( pileCard );
     }
+  } );
 
-    return member;
+  return pileCard;
+};
+
+const updateAuthAction = ( id, data ) => {
+  Game.members.forEach( member => {
+    if ( member.id === id ) {
+      let auth = member.auth;
+      auth = Object.assign( {}, member.auth, data );
+    }
+  } );
+};
+
+const updateDeckAction = ( targetId, cardId ) => {
+  Game.members.forEach( member => {
+    if ( member.id === targetId ) {
+      member.deck.forEach( d => {
+        if ( d.id === cardId ) {
+          let dcopy = d;
+          dcopy.flip = true;
+        }
+      } );
+    }
   } );
 };
 
@@ -192,4 +212,7 @@ module.exports = {
   exit,
   checkAleadyJoinMember,
   findJoinMember,
+  randomCardAction,
+  updateAuthAction,
+  updateDeckAction,
 };

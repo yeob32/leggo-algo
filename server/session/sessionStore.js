@@ -46,6 +46,15 @@ function removeSession( id ) {
   return session.filter( s => s.id !== id );
 }
 
+function updateSessionActionData( id, action ) {
+  session.forEach( ss => {
+    if ( ss.id === id ) {
+      let auth = ss.auth;
+      auth = Object.assign( {}, ss.auth, action );
+    }
+  } );
+}
+
 function updateSession( id ) {
   return session.filter( s => s.id !== id );
 }
@@ -56,4 +65,5 @@ module.exports = {
   getSession,
   getSessionList,
   removeSession,
+  updateSessionActionData,
 };

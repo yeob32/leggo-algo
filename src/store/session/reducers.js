@@ -28,13 +28,13 @@ export default function sessionReducer( state = initialState, action ) {
         name: state.name,
       };
     case UPDATE:
-      if ( !action.data.members || action.data.members.length === 0 ) {
+      if ( !action.data || action.data.length === 0 ) {
         return initialState;
       }
 
       // updateSession => 다른유저가 요청시에도 탄다고
-      return action.data.members.find( member => member.id === state.id )
-        ? action.data.members.find( member => member.id === state.id )
+      return action.data.find( member => member.id === state.id )
+        ? action.data.find( member => member.id === state.id )
         : state;
     case REMOVE:
       return {

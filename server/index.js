@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const express = require( 'express' );
 const app = express();
 const server = require( 'http' ).Server( app );
@@ -68,12 +69,7 @@ function onConnect( socket ) {
 
     gameService.initMember( session.id, session.name );
 
-    socket.emit( 'join-result', {
-      code: 200,
-      item: gameStatus,
-      message: session.name + '님이 참가함',
-    } );
-
+    socket.emit( 'update-session', gameStatus.members );
     io.emit( 'game-status', { item: gameStatus, message: session.name + '님이 참가함' } );
   } );
 
@@ -81,29 +77,49 @@ function onConnect( socket ) {
   socket.on( 'start', function( data ) {
     gameService.start();
 
-    io.emit( 'start', gameStatus );
+    socket.emit( 'update-session', gameStatus.members );
+    io.emit( 'game-status', { item: gameStatus, message: '게임 시작!!' } );
   } );
 
   // 나가기
   socket.on( 'exit', function( session ) {
     gameService.exit( session.id );
 
-    socket.emit( 'exit-result', {
-      code: 200,
-      item: gameStatus,
-      message: session.name + '님이 나감',
-    } );
+    socket.emit( 'exit-result', gameStatus.members );
     io.emit( 'game-status', { item: gameStatus, message: session.name + '님이 나감' } );
   } );
 
-  socket.on( 'action', function( id ) {
-    gameService.randomCardAction( id );
+  socket.on( 'action', function( type, data ) {
+    const { id, targetId, cardId } = data;
+    let message = '';
+
+    switch ( type ) {
+      case 'random': // 랜덤카드
+        gameService.randomCardAction( id );
+        gameService.updateAuthAction( id, { over: true } ); // 액션 상태 변경
+        message = '카드 게또';
+        break;
+      case 'turnOver': // 상대카드 뒤집기
+        gameService.updateDeckAction( targetId, cardId );
+        gameService.updateAuthAction( id, { check: true } );
+        // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
+        break;
+      case 'end': // 턴종료
+        gameService.updateAuthAction( id, { end: true } );
+        gameService.orderStack();
+
+        message = '턴 종료!';
+        break;
+
+      default:
+    }
 
     // 다음 액션 체크 ex) 상대 카드 뒤집기, 턴 종료
     // 점수 계산
     // 다음 턴
 
-    io.emit( 'game-status', gameStatus );
+    socket.emit( 'update-session', gameStatus.members );
+    io.emit( 'game-status', { item: gameStatus, message } );
   } );
 
   // 모든 소켓 콜백은 game object 반환

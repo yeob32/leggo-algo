@@ -37,22 +37,12 @@ class PlayGround extends Component {
       }
     } );
 
-    socketUtil().on( 'start', data => {
-      this.props.updateGameStatus( data );
-    } );
-
-    socketUtil().on( 'join-result', data => {
-      // this.props.updateGameStatus( data.item );
-      this.props.updateSession( data.item ); // socket.on => 자기만 응답 받는걸로 바꾸자,  updateGameStatus 이거는 공통으로 따로뺴야됨
-      // message.info( data.message );
+    socketUtil().on( 'update-session', data => {
+      this.props.updateSession( data );
     } );
 
     socketUtil().on( 'exit-result', data => {
       this.props.initSession();
-      // this.props.updateGameStatus( data.item );
-      // this.props.updateSession( data.item );
-
-      // message.warning( data.message );
     } );
 
     socketUtil().on( 'disconnect-result', data => {
