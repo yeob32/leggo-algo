@@ -3,7 +3,7 @@ import React from 'react';
 import { Row, Col, Card } from 'antd';
 import Player from '../components/Player';
 
-const PlayerList = ( { gameStatus } ) => {
+const PlayerList = ( { gameStatus, session } ) => {
   const Players =
     gameStatus.members &&
     gameStatus.members.map( member => (
@@ -14,6 +14,7 @@ const PlayerList = ( { gameStatus } ) => {
         <Player
           member={member}
           pileCards={gameStatus.pileCards}
+          session={session}
         />
       </Col>
     ) );

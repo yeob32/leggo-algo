@@ -7,9 +7,9 @@ const createSession = ( id, name ) => ( {
   score: 0,
   enter: false,
   order: null,
+  host: false,
   auth: {
-    host: false,
-    over: false, // 랜덤 카드 선택
+    random: false, // 랜덤 카드 선택
     check: false, // true면 턴
     hold: false, // true면 턴
   },
@@ -26,7 +26,7 @@ function saveSession( { id, name } ) {
   const sessionObject = createSession( id, name );
   if ( session.length === 0 ) {
     // 참가 할 때 방장 여부 결정
-    // sessionObject.auth.host = true;
+    // sessionObject.host = true;
   }
 
   session.push( sessionObject );

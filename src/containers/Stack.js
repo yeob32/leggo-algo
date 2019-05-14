@@ -8,11 +8,16 @@ import Cards from '../components/Card';
 class Stack extends React.Component {
   render() {
     const { pileCards } = this.props.gameReducer;
+    const sessionReducer = this.props.sessionReducer;
 
     return (
       <Card title="남은 카드">
         {pileCards.map( ps => (
-          <Cards card={ps} key={ps.id} />
+          <Cards
+            card={ps}
+            session={sessionReducer}
+            key={ps.id}
+          />
         ) )}
       </Card>
     );

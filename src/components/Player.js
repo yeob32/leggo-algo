@@ -7,11 +7,14 @@ import socketUtils from '../utils/socketUtil';
 
 const colorList = [ '#f56a00', '#7265e6', '#ffbf00', '#00a2ae' ];
 
-const Player = ( { member, pileCards } ) => {
+const Player = ( { member, pileCards, session } ) => {
+  const myTurn = member.id === session.id;
+  const disabled = session.auth.random;
+  const showRandomCardButton = member.turn && myTurn;
+
   const getRandomCard = id => {
-    console.log( 'getRandomCard > id > ', id );
     if ( pileCards ) {
-      socketUtils().emit( 'action', 'random', id );
+      socketUtils().emit( 'action', 'random', { id } );
       // return pileCards[0];
     }
   };
@@ -21,7 +24,7 @@ const Player = ( { member, pileCards } ) => {
       <Row>
         <Col span={12}>
           <Avatar
-            style={{ backgroundColor: colorList[member.id], verticalAlign: 'middle' }}
+            style={{ backgroundColor: colorList[member.order], verticalAlign: 'middle' }}
             size="large"
           >
             {member.id}
@@ -35,9 +38,10 @@ const Player = ( { member, pileCards } ) => {
               spin
             />
 )}
-            {member.turn ? (
+            {showRandomCardButton ? (
               <Button
                 type="primary"
+                disabled={disabled}
                 onClick={() => getRandomCard( member.id )}
               >
                 랜덤 카드

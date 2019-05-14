@@ -45,6 +45,10 @@ class PlayGround extends Component {
       this.props.initSession();
     } );
 
+    socketUtil().on( 'personal-message', data => {
+      message.info( data );
+    } );
+
     socketUtil().on( 'disconnect-result', data => {
       this.props.updateGameStatus( data );
 
@@ -100,7 +104,10 @@ class PlayGround extends Component {
             </Col>
           </Row>
           <Row className="playground-row">
-            <PlayerList gameStatus={gameReducer} />
+            <PlayerList
+              gameStatus={gameReducer}
+              session={sessionReducer}
+            />
           </Row>
           <Row className="playground-row">
             <Stack pileCards={pileCards} />

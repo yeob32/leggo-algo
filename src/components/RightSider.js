@@ -21,7 +21,7 @@ class LeftSider extends Component {
 
     const memberComponent = gameReducer.members.map( member => (
       <Menu.Item key={member.id}>
-        {member.name} {member.auth.host ? (
+        {member.name} {member.host ? (
           <Icon
             type="star"
             theme="filled"

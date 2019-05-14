@@ -7,10 +7,10 @@ import socketUtil from '../utils/socketUtil';
 
 class ControllPanel extends React.Component {
   start = () => {
-    const { auth } = this.props.sessionReducer;
+    const { host } = this.props.sessionReducer;
 
     // start => 카드분배 => 턴 순회 1분 => 점수
-    socketUtil().emit( 'start', auth.host );
+    socketUtil().emit( 'start', host );
   };
 
   join = () => {
@@ -31,7 +31,7 @@ class ControllPanel extends React.Component {
   };
 
   exit = () => {
-    const { id, enter } = this.props.sessionReducer;
+    const { id, name, enter } = this.props.sessionReducer;
     const { deal } = this.props.gameReducer;
 
     if ( !enter ) {
@@ -44,15 +44,15 @@ class ControllPanel extends React.Component {
       return;
     }
 
-    socketUtil().emit( 'exit', id );
+    socketUtil().emit( 'exit', { id, name } );
   };
 
   render() {
-    const { auth } = this.props.sessionReducer;
+    const { host } = this.props.sessionReducer;
     const { deal } = this.props.gameReducer;
     const { start, join, exit } = this;
 
-    const showButton = auth.host && !deal;
+    const showButton = host && !deal;
 
     return (
       <div>

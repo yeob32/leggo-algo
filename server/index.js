@@ -77,7 +77,7 @@ function onConnect( socket ) {
   socket.on( 'start', function( data ) {
     gameService.start();
 
-    socket.emit( 'update-session', gameStatus.members );
+    io.emit( 'update-session', gameStatus.members );
     io.emit( 'game-status', { item: gameStatus, message: '게임 시작!!' } );
   } );
 
@@ -97,11 +97,16 @@ function onConnect( socket ) {
 
     switch ( type ) {
       case 'random': // 랜덤카드
-        gameService.randomCardAction( id );
-        gameService.updateAuthAction( id, { over: true } ); // 액션 상태 변경
+        const result = cardId
+          ? gameService.randomCardAction( id, cardId )
+          : gameService.randomCardAction( id );
+
+        gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
         message = '카드 게또';
+
+        socket.emit( 'personal-message', result.name + ' 카드 게또!' );
         break;
-      case 'turnOver': // 상대카드 뒤집기
+      case 'check': // 상대카드 뒤집기
         gameService.updateDeckAction( targetId, cardId );
         gameService.updateAuthAction( id, { check: true } );
         // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
@@ -115,6 +120,8 @@ function onConnect( socket ) {
 
       default:
     }
+
+    // 카드 정렬 하자
 
     // 다음 액션 체크 ex) 상대 카드 뒤집기, 턴 종료
     // 점수 계산

@@ -7,8 +7,9 @@ const initialState = {
   score: 0,
   enter: false,
   order: null,
+  host: false,
   auth: {
-    host: false,
+    random: false,
     check: false, // true면 턴
     hold: false, // true면 턴
   },

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-unreachable */
 const Game = require( './index' );
 
@@ -10,8 +11,9 @@ const createMember = ( id, name ) => ( {
   score: 0,
   enter: false,
   order: null,
+  host: false,
   auth: {
-    host: false,
+    random: false, // 랜덤 카드 선택
     check: false, // true면 턴
     hold: false, // true면 턴
   },
@@ -22,7 +24,7 @@ const initMember = ( id, name ) => {
   const memberData = createMember( id, name );
   const memberCount = Game.members.length;
   if ( memberCount === 0 ) {
-    memberData.auth.host = true;
+    memberData.host = true;
   }
 
   memberData.order = memberCount;
@@ -60,8 +62,9 @@ const findJoinMember = session => {
   return Game.members.find( member => member.id === session.id );
 };
 
-const randomCardAction = id => {
-  const pileCard = Game.pileCards[0];
+const randomCardAction = ( id, cardId ) => {
+  const pileCard = cardId ? Game.pileCards.find( ps => ps.id === cardId ) : Game.pileCards[0];
+
   Game.members.forEach( member => {
     if ( member.id === id ) {
       member.deck.push( pileCard );
@@ -69,13 +72,14 @@ const randomCardAction = id => {
   } );
 
   Game.pileCards = Game.pileCards.filter( card => card.id !== pileCard.id );
+
+  return pileCard;
 };
 
 const updateAuthAction = ( id, data ) => {
   Game.members.forEach( member => {
     if ( member.id === id ) {
-      let auth = member.auth;
-      auth = Object.assign( {}, member.auth, data );
+      member.auth = Object.assign( {}, member.auth, data );
     }
   } );
 };
@@ -85,8 +89,7 @@ const updateDeckAction = ( targetId, cardId ) => {
     if ( member.id === targetId ) {
       member.deck.forEach( d => {
         if ( d.id === cardId ) {
-          let dcopy = d;
-          dcopy.flip = true;
+          d.flip = true;
         }
       } );
     }
@@ -164,6 +167,13 @@ const orderStack = () => {
 
   if ( count > 0 ) {
     Game.members[order].turn = true;
+    Game.members[order].auth = {
+      random: false,
+      check: false,
+      hold: false,
+    };
+
+    console.log( 'orderStack > ', order );
 
     // const currentOrderUser = Game.members[order];
     // currentOrderUser.turn = true;
