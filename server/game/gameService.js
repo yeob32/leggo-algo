@@ -18,6 +18,7 @@ const createMember = ( id, name ) => ( {
     hold: false, // true면 턴
   },
   turn: false,
+  temp: {},
 } );
 
 const initMember = ( id, name ) => {
@@ -72,6 +73,7 @@ const randomCardAction = ( id, cardId ) => {
   } );
 
   Game.pileCards = Game.pileCards.filter( card => card.id !== pileCard.id );
+  Game.temp = pileCard;
 
   return pileCard;
 };

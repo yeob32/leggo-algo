@@ -90,7 +90,7 @@ function onConnect( socket ) {
   } );
 
   socket.on( 'action', function( type, data ) {
-    const { id, targetId, cardId } = data;
+    const { id, targetMemberId, cardId } = data;
     let message = '';
 
     console.log( 'action > ', type, data );
@@ -106,9 +106,20 @@ function onConnect( socket ) {
 
         socket.emit( 'personal-message', result.name + ' 카드 게또!' );
         break;
-      case 'check': // 상대카드 뒤집기
-        gameService.updateDeckAction( targetId, cardId );
+      case 'check-success': // 상대카드 뒤집기
+        gameService.updateDeckAction( targetMemberId, cardId );
         gameService.updateAuthAction( id, { check: true } );
+        // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
+        break;
+      case 'check-fail': // 상대카드 뒤집기
+        // gameService.updateAuthAction( id, { check: true } );
+        // gameService.updateAuthAction( id, { end: true } );
+
+        // gameService.tempToPile(id)
+        // temp 오브젝트 제거하고 member.deck 에서 temp 카드 찾아서 flip => true
+
+        // end 필드가 필요가 없는데??? 그냥 턴 넘기면 되잖아
+        gameService.orderStack();
         // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
         break;
       case 'end': // 턴종료

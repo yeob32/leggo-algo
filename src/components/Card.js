@@ -9,7 +9,7 @@ import socketUtils from '../utils/socketUtil';
  *
  */
 const Card = ( { card, session } ) => {
-  const disabled = session.auth.random;
+  const disabled = !session.turn || session.auth.random;
 
   // session.user.setDeckStack()
   // 선택된 카드 배열에서 삭제

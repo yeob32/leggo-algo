@@ -4,8 +4,31 @@ import { connect } from 'react-redux';
 
 import { Popconfirm, Popover, message, Icon, Button } from 'antd';
 
+import socketUtils from '../utils/socketUtil';
+
 class Deck extends React.PureComponent {
-  confirm = e => {
+  confirm = ( pile, deck, member ) => {
+    const id = this.props.sessionReducer.id;
+
+    console.log( 'deck > ', deck );
+    console.log( 'select pile > ', pile );
+    console.log( 'select member > ', member );
+
+    // 뭔가 효과 주자 비루루룽
+
+    if ( deck.id === pile.id ) {
+      // 성공
+      socketUtils().emit( 'action', 'check-success', {
+        id,
+        targetMemberId: member.id,
+        cardId: deck.id,
+      } );
+    } else {
+      // 실패
+      socketUtils().emit( 'action', 'check-fail', { id } );
+    }
+    // socketUtils().emit( 'action', 'check', { id, cardId: pile.id } );
+
     message.success( '맞춤' );
   };
 
@@ -18,13 +41,13 @@ class Deck extends React.PureComponent {
   };
 
   render() {
-    const { deck, piles } = this.props;
+    const { deck, piles, member } = this.props;
     const { turn } = this.props.sessionReducer;
 
     const content = piles.map( pile => (
       <Popconfirm
         title="Do you want to select this card?"
-        onConfirm={this.confirm}
+        onConfirm={() => this.confirm( pile, deck, member.id )}
         onCancel={this.cancel}
         okText="Yes"
         cancelText="No"
