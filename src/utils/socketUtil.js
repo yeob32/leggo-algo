@@ -10,6 +10,10 @@ export function initSocket( url ) {
   }
 }
 
+export function existSocket() {
+  console.log( 'socket > ', socket );
+}
+
 export function closeSocket() {
   socket = null;
 }

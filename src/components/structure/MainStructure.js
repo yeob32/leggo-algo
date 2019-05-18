@@ -6,11 +6,15 @@ import Header from '../Header';
 import Footer from '../Footer';
 import RightSider from '../RightSider';
 
+import { existSocket } from '../../utils/socketUtil';
+
 const { Content } = Layout;
 
 const MainStructure = ( { children } ) => {
   const { key } = children;
   const useWrapper = key ? '' : 'loginForm';
+
+  existSocket();
 
   const wrapperComponent = useWrapper ? (
     <Layout>

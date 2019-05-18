@@ -1,8 +1,19 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unreachable */
 const Game = require( './index' );
+const cardData = require( './cardData' ).cards;
 
 const maxUserCount = 4;
+
+const initGameStatus = () => {
+  Game.status = 'ready';
+  Game.deal = false;
+  Game.cards = cardData;
+  Game.discardHolder = []; //
+  Game.pileCards = cardData; // 남은 카드
+  Game.members = [];
+  Game.order = 0;
+};
 
 const createMember = ( id, name ) => ( {
   id,
@@ -69,13 +80,21 @@ const randomCardAction = ( id, cardId ) => {
   Game.members.forEach( member => {
     if ( member.id === id ) {
       member.deck.push( pileCard );
+      member.temp = pileCard;
     }
   } );
 
   Game.pileCards = Game.pileCards.filter( card => card.id !== pileCard.id );
-  Game.temp = pileCard;
 
   return pileCard;
+};
+
+const updateTurnAction = ( id, data ) => {
+  Game.members.forEach( member => {
+    if ( member.id === id ) {
+      member.turn = data;
+    }
+  } );
 };
 
 const updateAuthAction = ( id, data ) => {
@@ -91,6 +110,18 @@ const updateDeckAction = ( targetId, cardId ) => {
     if ( member.id === targetId ) {
       member.deck.forEach( d => {
         if ( d.id === cardId ) {
+          d.flip = true;
+        }
+      } );
+    }
+  } );
+};
+
+const tempToPile = id => {
+  Game.members.forEach( member => {
+    if ( member.id === id ) {
+      member.deck.forEach( d => {
+        if ( d.id === member.temp.id ) {
           d.flip = true;
         }
       } );
@@ -157,61 +188,34 @@ const isCrowded = () => {
 };
 
 const orderStack = () => {
-  const count = Game.pileCards.length; //
-  let order = 0;
+  const count = Game.pileCards.length;
+  let order = Game.order;
 
-  const turnOver = () => {
-    order += 1;
-    if ( order > Game.members.length - 1 ) {
-      order = 0;
-    }
-  };
+  console.log( 'count > ', count );
+  console.log( 'order > ', order );
+  // console.log( 'Game > ', Game );
+  console.log( 'Game.members[order] > ', Game.members[order].id );
 
   if ( count > 0 ) {
-    Game.members[order].turn = true;
-    Game.members[order].auth = {
+    Game.members[Game.order].turn = true;
+    Game.members[Game.order].auth = {
       random: false,
       check: false,
       hold: false,
     };
 
-    console.log( 'orderStack > ', order );
+    console.log( '>>>>> ', Game.members[Game.order].id );
+    console.log( '>>>>> ', Game.members[Game.order].turn );
 
-    // const currentOrderUser = Game.members[order];
-    // currentOrderUser.turn = true;
+    Game.order += 1;
+    if ( Game.order > Game.members.length - 1 ) {
+      Game.order = 0;
+    }
 
-    // console.log(
-    //   'order > %s , currentOrderUser > %s, restCount > %s ',
-    //   order,
-    //   Game.members[order],
-    //   count,
-    // );
-
-    // currentOrderUser.turn = true;
-    // Game.members[order] = currentOrderUser;
-
-    turnOver();
-
-    // currentOrderUser.turn = true;
-
-    // Game.members = currentMembers.map( member => {
-    //   if ( member.id === currentOrderUser.id ) {
-    //     currentOrderUser.turn = true;
-    //     return currentOrderUser;
-    //   }
-
-    //   return member;
-    // } );
+    console.log( 'orderStack > ', Game.order );
+  } else {
+    // 게임 종료
   }
-};
-
-const init = () => {
-  Game.state = 'ready';
-  Game.deal = 'false';
-  Game.cards = require( './cardData' ).cards;
-  Game.discardHolder = 'ready';
-  Game.pileCards = require( './cardData' ).cards;
-  Game.members = [];
 };
 
 module.exports = {
@@ -220,11 +224,14 @@ module.exports = {
   start,
   getMemberList,
   disconnect,
-  init,
   exit,
   checkAleadyJoinMember,
   findJoinMember,
   randomCardAction,
   updateAuthAction,
   updateDeckAction,
+  updateTurnAction,
+  orderStack,
+  initGameStatus,
+  tempToPile,
 };

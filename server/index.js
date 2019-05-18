@@ -69,7 +69,7 @@ function onConnect( socket ) {
 
     gameService.initMember( session.id, session.name );
 
-    socket.emit( 'update-session', gameStatus.members );
+    socket.emit( 'update-session', { item: gameStatus.members } );
     io.emit( 'game-status', { item: gameStatus, message: session.name + '님이 참가함' } );
   } );
 
@@ -77,84 +77,93 @@ function onConnect( socket ) {
   socket.on( 'start', function( data ) {
     gameService.start();
 
-    io.emit( 'update-session', gameStatus.members );
+    io.emit( 'update-session', { item: gameStatus.members } );
     io.emit( 'game-status', { item: gameStatus, message: '게임 시작!!' } );
   } );
 
   // 나가기
   socket.on( 'exit', function( session ) {
+    if ( !session.id ) {
+      return;
+    }
+
     gameService.exit( session.id );
 
     socket.emit( 'exit-result', gameStatus.members );
     io.emit( 'game-status', { item: gameStatus, message: session.name + '님이 나감' } );
   } );
 
-  socket.on( 'action', function( type, data ) {
-    const { id, targetMemberId, cardId } = data;
-    let message = '';
+  socket.on( 'action-random', function( data ) {
+    const { id, cardId } = data;
+    let message;
 
-    console.log( 'action > ', type, data );
+    const result = cardId
+      ? gameService.randomCardAction( id, cardId )
+      : gameService.randomCardAction( id );
 
-    switch ( type ) {
-      case 'random': // 랜덤카드
-        const result = cardId
-          ? gameService.randomCardAction( id, cardId )
-          : gameService.randomCardAction( id );
+    gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
+    message = '카드 게또';
 
-        gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
-        message = '카드 게또';
-
-        socket.emit( 'personal-message', result.name + ' 카드 게또!' );
-        break;
-      case 'check-success': // 상대카드 뒤집기
-        gameService.updateDeckAction( targetMemberId, cardId );
-        gameService.updateAuthAction( id, { check: true } );
-        // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
-        break;
-      case 'check-fail': // 상대카드 뒤집기
-        // gameService.updateAuthAction( id, { check: true } );
-        // gameService.updateAuthAction( id, { end: true } );
-
-        // gameService.tempToPile(id)
-        // temp 오브젝트 제거하고 member.deck 에서 temp 카드 찾아서 flip => true
-
-        // end 필드가 필요가 없는데??? 그냥 턴 넘기면 되잖아
-        gameService.orderStack();
-        // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
-        break;
-      case 'end': // 턴종료
-        gameService.updateAuthAction( id, { end: true } );
-        gameService.orderStack();
-
-        message = '턴 종료!';
-        break;
-
-      default:
-    }
-
-    // 카드 정렬 하자
-
-    // 다음 액션 체크 ex) 상대 카드 뒤집기, 턴 종료
-    // 점수 계산
-    // 다음 턴
-
-    socket.emit( 'update-session', gameStatus.members );
+    console.log( 'action-random > 123123' );
+    socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
     io.emit( 'game-status', { item: gameStatus, message } );
   } );
 
-  // 모든 소켓 콜백은 game object 반환
-  socket.on( 'card-select', function( data ) {
-    io.emit( '', gameStatus );
+  socket.on( 'action-check', function( type, data ) {
+    const { id, targetMemberId, cardId } = data;
+
+    switch ( type ) {
+      case 'success': // 상대카드 뒤집기
+        gameService.updateDeckAction( targetMemberId, cardId );
+        gameService.updateAuthAction( id, { check: true } );
+
+        socket.emit( 'update-session', { item: gameStatus.members } );
+        io.emit( 'game-status', { item: gameStatus } );
+        break;
+      case 'fail': // 상대카드 뒤집기
+        // gameService.tempToPile(id)
+        // temp 오브젝트 제거하고 member.deck 에서 temp 카드 찾아서 flip => true
+
+        gameService.orderStack();
+        gameService.updateAuthAction( id, { hold: false, check: false, random: false } );
+        gameService.updateTurnAction( id, false );
+        gameService.tempToPile( id );
+        // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
+
+        socket.emit( 'update-session', { item: gameStatus.members } );
+        io.emit( 'game-status', { item: gameStatus } );
+        break;
+      default:
+    }
+  } );
+
+  socket.on( 'end', function() {
+    io.emit( 'game-status', { item: gameStatus, message: '게임 종료' } ); // 게임 결과 리턴
+    io.emit( 'end' );
+  } );
+
+  socket.on( 'destroy-session', function( session ) {
+    if ( !session.id ) {
+      return;
+    }
+
+    gameService.exit( session.id );
+    sessionStore.removeSession( session.id ); // 일단 ssr 이나 로컬스토리 같은 걸 안쓰니까 초기화 시킴
+
+    socket.emit( 'exit-result', gameStatus.members );
+    io.emit( 'game-status', { item: gameStatus, message: session.name + '님이 나감' } );
   } );
 
   // 접속 종료
-  // socket.on( 'disconnect', function() {
-  //   console.log( 'Got disconnect! > ' );
+  socket.on( 'disconnect', function() {
+    socket.disconnect( 0 );
+    const i = allClients.indexOf( socket );
+    allClients.splice( i, 1 );
 
-  //   socket.disconnect( 0 );
-  //   const i = allClients.indexOf( socket );
-  //   allClients.splice( i, 1 );
+    if ( sessionStore.getSessionList().length === 0 ) {
+      gameService.initGameStatus();
+    }
 
-  //   io.emit( 'disconnect-result', gameStatus );
-  // } );
+    // io.emit( 'disconnect-result', gameStatus );
+  } );
 }

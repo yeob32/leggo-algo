@@ -9,31 +9,27 @@ import socketUtils from '../utils/socketUtil';
 class Deck extends React.PureComponent {
   confirm = ( pile, deck, member ) => {
     const id = this.props.sessionReducer.id;
-
-    console.log( 'deck > ', deck );
-    console.log( 'select pile > ', pile );
-    console.log( 'select member > ', member );
-
     // 뭔가 효과 주자 비루루룽
 
     if ( deck.id === pile.id ) {
       // 성공
-      socketUtils().emit( 'action', 'check-success', {
+      socketUtils().emit( 'action-check', 'success', {
         id,
         targetMemberId: member.id,
         cardId: deck.id,
       } );
+
+      message.success( '맞춤' );
     } else {
       // 실패
-      socketUtils().emit( 'action', 'check-fail', { id } );
-    }
-    // socketUtils().emit( 'action', 'check', { id, cardId: pile.id } );
+      socketUtils().emit( 'action-check', 'fail', { id } );
 
-    message.success( '맞춤' );
+      message.success( '틀림' );
+    }
   };
 
   cancel = e => {
-    message.error( '틀렸다네' );
+    // message.error( '취소' );
   };
 
   checkCurrentMember = () => {
@@ -42,7 +38,9 @@ class Deck extends React.PureComponent {
 
   render() {
     const { deck, piles, member } = this.props;
-    const { turn } = this.props.sessionReducer;
+    const { turn, auth } = this.props.sessionReducer;
+
+    const disabled = !auth.random; // flip - false, rnadom - true 인것만 클릭 가능
 
     const content = piles.map( pile => (
       <Popconfirm
@@ -68,11 +66,13 @@ class Deck extends React.PureComponent {
 
       let deckContext = '';
       let trigger = '';
+      let buttonType = 'default';
 
       if ( check ) {
         // 내 카드
         deckContext = deck.name;
         trigger = '';
+        buttonType = deck.flip ? 'dashed' : '';
       } else {
         deckContext = deck.flip ? deck.name : <Icon type="smile" />;
         if ( turn ) {
@@ -87,7 +87,12 @@ class Deck extends React.PureComponent {
           title="카드 선택"
           trigger={trigger}
         >
-          <Button>{deckContext}</Button>
+          <Button
+            type={buttonType}
+            disabled={disabled}
+          >
+            {deckContext}
+          </Button>
         </Popover>
       );
     };

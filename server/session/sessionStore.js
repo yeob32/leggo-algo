@@ -43,7 +43,11 @@ function getSessionList() {
 }
 
 function removeSession( id ) {
-  return session.filter( s => s.id !== id );
+  const sessionIndex = session.findIndex( s => s.id === id );
+  if ( sessionIndex > -1 ) {
+    console.log( 'remove session > ', id );
+    return session.splice( sessionIndex, 1 );
+  }
 }
 
 function updateSessionActionData( id, action ) {

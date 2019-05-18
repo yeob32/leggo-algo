@@ -38,32 +38,29 @@ class PlayGround extends Component {
     } );
 
     socketUtil().on( 'update-session', data => {
-      this.props.updateSession( data );
+      const { item, pm } = data;
+
+      if ( item ) {
+        this.props.updateSession( item );
+        if ( pm ) {
+          message.info( pm );
+        }
+      }
     } );
 
     socketUtil().on( 'exit-result', data => {
       this.props.initSession();
     } );
-
-    socketUtil().on( 'personal-message', data => {
-      message.info( data );
-    } );
-
-    socketUtil().on( 'disconnect-result', data => {
-      this.props.updateGameStatus( data );
-
-      message.warn( 'aㅜ지 !!!' );
-    } );
   }
 
   componentWillUnmount() {
-    console.log( 'do componentWillUnmount' );
-    socketUtil().emit( 'exit', this.props.sessionReducer.id );
-    socketUtil().emit( 'disconnect', this.props.sessionReducer.id );
+    socketUtil().emit( 'disconnect' );
+    socketUtil().emit( 'destroy-session', this.props.sessionReducer );
   }
 
   detectDisconnectBeforeUnload = () => {
-    alert( 'detectDisconnectBeforeUnload' );
+    socketUtil().emit( 'disconnect' );
+    socketUtil().emit( 'destroy-session', this.props.sessionReducer );
   };
 
   setupBeforeUnloadListener = () => {

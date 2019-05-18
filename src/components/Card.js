@@ -22,7 +22,7 @@ const Card = ( { card, session } ) => {
     // pileCard 배열에서 제거
     // message.success( 'Click on Yes' ); // 얻은 카드 넘버
 
-    socketUtils().emit( 'action', 'random', { id: session.id, cardId: card.id } );
+    socketUtils().emit( 'action-random', { id: session.id, cardId: card.id } );
   };
 
   function cancel( e ) {

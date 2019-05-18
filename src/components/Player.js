@@ -14,7 +14,7 @@ const Player = ( { member, pileCards, session } ) => {
 
   const getRandomCard = id => {
     if ( pileCards ) {
-      socketUtils().emit( 'action', 'random', { id } );
+      socketUtils().emit( 'action-random', { id } );
       // return pileCards[0];
     }
   };
