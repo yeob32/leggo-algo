@@ -2,20 +2,22 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import { Popconfirm, Popover, message, Icon, Button } from 'antd';
+import { Popconfirm, Popover, message, Icon, Button, Badge } from 'antd';
 
 import socketUtils from '../utils/socketUtil';
 
+import './Deck.css';
+
 class Deck extends React.PureComponent {
-  confirm = ( pile, deck, member ) => {
+  confirm = ( enableCard, deck, memberId ) => {
     const id = this.props.sessionReducer.id;
     // 뭔가 효과 주자 비루루룽
 
-    if ( deck.id === pile.id ) {
+    if ( deck.id === enableCard.id ) {
       // 성공
       socketUtils().emit( 'action-check', 'success', {
         id,
-        targetMemberId: member.id,
+        targetMemberId: memberId,
         cardId: deck.id,
       } );
 
@@ -37,15 +39,15 @@ class Deck extends React.PureComponent {
   };
 
   render() {
-    const { deck, piles, member } = this.props;
+    const { deck, member, enableSelectCard } = this.props;
     const { turn, auth } = this.props.sessionReducer;
 
-    const disabled = !auth.random; // flip - false, rnadom - true 인것만 클릭 가능
+    const disabled = !auth.random || deck.flip; // TODO flip - false, rnadom - true 인것만 클릭 가능
 
-    const content = piles.map( pile => (
+    const content = enableSelectCard.map( enableCard => (
       <Popconfirm
         title="Do you want to select this card?"
-        onConfirm={() => this.confirm( pile, deck, member.id )}
+        onConfirm={() => this.confirm( enableCard, deck, member.id )}
         onCancel={this.cancel}
         okText="Yes"
         cancelText="No"
@@ -55,9 +57,9 @@ class Deck extends React.PureComponent {
             style={{ color: 'red' }}
           />
 )}
-        key={pile.id}
+        key={enableCard.id}
       >
-        <Button key={pile.id}>{pile.name}</Button>
+        <Button key={enableCard.id}>{enableCard.name}</Button>
       </Popconfirm>
     ) );
 
@@ -72,10 +74,10 @@ class Deck extends React.PureComponent {
         // 내 카드
         deckContext = deck.name;
         trigger = '';
-        buttonType = deck.flip ? 'dashed' : '';
+        buttonType = deck.flip ? 'danger' : 'primary';
       } else {
         deckContext = deck.flip ? deck.name : <Icon type="smile" />;
-        if ( turn ) {
+        if ( turn && !disabled ) {
           trigger = 'click';
         }
       }
@@ -87,12 +89,30 @@ class Deck extends React.PureComponent {
           title="카드 선택"
           trigger={trigger}
         >
-          <Button
-            type={buttonType}
-            disabled={disabled}
+          <Badge count={(
+            <Icon
+              type="clock-circle"
+              style={{ color: '#f5222d' }}
+            />
+)}
           >
-            {deckContext}
-          </Button>
+            <a>
+              <div
+                className="deck-shape"
+                style={{ backgroundColor: deck.type === 'black' ? '#3E3C3C' : '#FAF5F5' }}
+              >
+                <div className="deck-detail">{deckContext}</div>
+              </div>
+            </a>
+
+            {/* <a
+              href=""
+              className="deck-shape"
+            >
+              {deckContext}
+            </a> */}
+            {/* <Button type={buttonType}>{deckContext}</Button> */}
+          </Badge>
         </Popover>
       );
     };

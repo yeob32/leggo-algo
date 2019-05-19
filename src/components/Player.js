@@ -7,7 +7,7 @@ import socketUtils from '../utils/socketUtil';
 
 const colorList = [ '#f56a00', '#7265e6', '#ffbf00', '#00a2ae' ];
 
-const Player = ( { member, pileCards, session } ) => {
+const Player = ( { member, pileCards, discardHolder, session } ) => {
   const myTurn = member.id === session.id;
   const disabled = session.auth.random;
   const showRandomCardButton = member.turn && myTurn;
@@ -66,6 +66,7 @@ const Player = ( { member, pileCards, session } ) => {
         <DeckList
           member={member}
           pileCards={pileCards}
+          discardHolder={discardHolder}
         />
       </Card>
     </div>

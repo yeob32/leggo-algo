@@ -109,6 +109,8 @@ const updateDeckAction = ( targetId, cardId ) => {
   Game.members.forEach( member => {
     if ( member.id === targetId ) {
       member.deck.forEach( d => {
+        console.log( 'd.id > ', d.id );
+        console.log( 'cardId > ', cardId );
         if ( d.id === cardId ) {
           d.flip = true;
         }

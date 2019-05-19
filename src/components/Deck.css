@@ -1,0 +1,15 @@
+.deck-shape {
+  width: 42px;
+  height: 42px;
+  border-radius: 4px;
+  background: #eee;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 2.5px 0 2.5px;
+}
+
+.deck-detail {
+  font-size: 25px;
+  text-align: center;
+  padding-top: 20%;
+}

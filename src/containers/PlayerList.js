@@ -4,6 +4,8 @@ import { Row, Col, Card } from 'antd';
 import Player from '../components/Player';
 
 const PlayerList = ( { gameStatus, session } ) => {
+  console.log( 'gameStatus.discardHolder > ', gameStatus.discardHolder );
+
   const Players =
     gameStatus.members &&
     gameStatus.members.map( member => (
@@ -14,6 +16,7 @@ const PlayerList = ( { gameStatus, session } ) => {
         <Player
           member={member}
           pileCards={gameStatus.pileCards}
+          discardHolder={gameStatus.discardHolder}
           session={session}
         />
       </Col>

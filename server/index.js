@@ -104,7 +104,6 @@ function onConnect( socket ) {
     gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
     message = '카드 게또';
 
-    console.log( 'action-random > 123123' );
     socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
     io.emit( 'game-status', { item: gameStatus, message } );
   } );
@@ -117,8 +116,6 @@ function onConnect( socket ) {
         gameService.updateDeckAction( targetMemberId, cardId );
         gameService.updateAuthAction( id, { check: true } );
 
-        socket.emit( 'update-session', { item: gameStatus.members } );
-        io.emit( 'game-status', { item: gameStatus } );
         break;
       case 'fail': // 상대카드 뒤집기
         // gameService.tempToPile(id)
@@ -130,11 +127,12 @@ function onConnect( socket ) {
         gameService.tempToPile( id );
         // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
 
-        socket.emit( 'update-session', { item: gameStatus.members } );
-        io.emit( 'game-status', { item: gameStatus } );
         break;
       default:
     }
+
+    io.emit( 'update-session', { item: gameStatus.members } );
+    io.emit( 'game-status', { item: gameStatus } );
   } );
 
   socket.on( 'end', function() {

@@ -41,6 +41,7 @@ class PlayGround extends Component {
       const { item, pm } = data;
 
       if ( item ) {
+        console.log( 'this is update-session client > ', item );
         this.props.updateSession( item );
         if ( pm ) {
           message.info( pm );
