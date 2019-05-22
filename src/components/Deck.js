@@ -42,7 +42,7 @@ class Deck extends React.PureComponent {
     const { deck, member, enableSelectCard } = this.props;
     const { turn, auth } = this.props.sessionReducer;
 
-    const disabled = !auth.random || deck.flip; // TODO flip - false, rnadom - true 인것만 클릭 가능
+    const disabled = !auth.random || deck.flip;
 
     const content = enableSelectCard.map( enableCard => (
       <Popconfirm

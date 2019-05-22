@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unreachable */
 const Game = require( './index' );
@@ -47,19 +48,38 @@ const initMember = ( id, name ) => {
 
 const start = () => {
   dealCard(); // 카드 분배
+  shuffle(); // 카드 섞기
   orderStack(); // 순서 설정
 };
 
-const action = type => {
-  switch ( type ) {
-    case 'selectPileCard':
-      break;
-    case 'selectDeck':
-      break;
-    default:
-  }
+const shuffle = () => {
+  let temp = {};
 
-  orderStack();
+  Game.pileCards.forEach( ( card, index ) => {
+    const random = Game.pileCards[Math.floor( Math.random() * ( index + 1 ) )];
+
+    temp = card;
+    Game.pileCards[index] = Game.pileCards[random];
+    Game.pileCards[random] = temp;
+  } );
+};
+
+const sortDeck = id => {
+  const player = Game.members.find( member => member.id === id );
+  const deckList = player.deck;
+
+  const totalDeckCount = 24;
+
+  let temp;
+
+  // TODO 허허....어렵네 이거
+  for ( let i = 0; i < deckList.length; i++ ) {
+    temp = deckList[i];
+
+    for ( let j = 0; j < deckList.length - 1; j++ ) {
+      console.log( deckList[j] );
+    }
+  }
 };
 
 const getMemberList = () => {
@@ -109,8 +129,6 @@ const updateDeckAction = ( targetId, cardId ) => {
   Game.members.forEach( member => {
     if ( member.id === targetId ) {
       member.deck.forEach( d => {
-        console.log( 'd.id > ', d.id );
-        console.log( 'cardId > ', cardId );
         if ( d.id === cardId ) {
           d.flip = true;
         }
@@ -193,11 +211,6 @@ const orderStack = () => {
   const count = Game.pileCards.length;
   let order = Game.order;
 
-  console.log( 'count > ', count );
-  console.log( 'order > ', order );
-  // console.log( 'Game > ', Game );
-  console.log( 'Game.members[order] > ', Game.members[order].id );
-
   if ( count > 0 ) {
     Game.members[Game.order].turn = true;
     Game.members[Game.order].auth = {
@@ -206,15 +219,10 @@ const orderStack = () => {
       hold: false,
     };
 
-    console.log( '>>>>> ', Game.members[Game.order].id );
-    console.log( '>>>>> ', Game.members[Game.order].turn );
-
     Game.order += 1;
     if ( Game.order > Game.members.length - 1 ) {
       Game.order = 0;
     }
-
-    console.log( 'orderStack > ', Game.order );
   } else {
     // 게임 종료
   }

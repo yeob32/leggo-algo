@@ -16,17 +16,8 @@ const Card = ( { card, session } ) => {
 
   const disabled = !session.turn || session.auth.random;
 
-  // session.user.setDeckStack()
-  // 선택된 카드 배열에서 삭제
-  const build = () => {
-    console.log( card );
-  };
-
   const confirm = e => {
     setVisible( false );
-    // build() 내 카드 배열에 추가
-    // pileCard 배열에서 제거
-    // message.success( 'Click on Yes' ); // 얻은 카드 넘버
 
     socketUtils().emit( 'action-random', { id: session.id, cardId: card.id } );
   };
@@ -37,8 +28,6 @@ const Card = ( { card, session } ) => {
   }
 
   const handleVisibleChange = data => {
-    console.log();
-
     if ( !data ) {
       setVisible( data );
       return;
@@ -77,23 +66,6 @@ const Card = ( { card, session } ) => {
           </div>
         </div>
       </a>
-      {/* <a>
-        <div>
-          <Icon
-            type="heart"
-            theme="twoTone"
-            twoToneColor="#eb2f96"
-          />
-        </div>
-      </a> */}
-      {/* <Button disabled={disabled}>
-        <Icon
-          type="heart"
-          theme="twoTone"
-          twoToneColor="#eb2f96"
-        />
-      </Button> */}
-      &nbsp;
     </Popconfirm>
   );
 };

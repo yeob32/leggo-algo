@@ -19,6 +19,8 @@ const initialState = {
 export default function sessionReducer( state = initialState, action ) {
   switch ( action.type ) {
     case SAVE:
+      localStorage.setItem( 'sessionId', action.session.id );
+
       return {
         ...action.session,
       };

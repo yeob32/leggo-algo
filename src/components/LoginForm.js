@@ -60,11 +60,19 @@ class LoginForm extends Component {
   render() {
     return (
       <div id="login-container">
-        <Form onSubmit={this.handleSubmit} className="login-form">
+        <Form
+          onSubmit={this.handleSubmit}
+          className="login-form"
+        >
           <Form.Item>
             <Input
               name="id"
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={(
+                <Icon
+                  type="user"
+                  style={{ color: 'rgba(0,0,0,.25)' }}
+                />
+)}
               placeholder="UserId"
               onChange={this.handleChange}
             />
@@ -72,7 +80,12 @@ class LoginForm extends Component {
           <Form.Item>
             <Input
               name="name"
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={(
+                <Icon
+                  type="user"
+                  style={{ color: 'rgba(0,0,0,.25)' }}
+                />
+)}
               placeholder="Username"
               onChange={this.handleChange}
             />
@@ -80,7 +93,12 @@ class LoginForm extends Component {
           <Form.Item>
             <Input
               name="password"
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={(
+                <Icon
+                  type="lock"
+                  style={{ color: 'rgba(0,0,0,.25)' }}
+                />
+)}
               type="password"
               placeholder="Password"
               onChange={this.handleChange}
@@ -88,10 +106,17 @@ class LoginForm extends Component {
           </Form.Item>
           <Form.Item>
             <Checkbox>Remember me</Checkbox>
-            <a className="login-form-forgot" href="">
+            <a
+              className="login-form-forgot"
+              href=""
+            >
               Forgot password
             </a>
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+            >
               Log in
             </Button>
             Or <a href="">register now!</a>

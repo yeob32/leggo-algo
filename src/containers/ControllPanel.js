@@ -8,9 +8,14 @@ import socketUtil from '../utils/socketUtil';
 class ControllPanel extends React.Component {
   start = () => {
     const { host } = this.props.sessionReducer;
-
+    const { members } = this.props.gameReducer;
     // start => 카드분배 => 턴 순회 1분 => 점수
-    socketUtil().emit( 'start', host );
+
+    if ( members && members.length > 1 ) {
+      socketUtil().emit( 'start', host );
+    } else {
+      message.warn( '혼자서는 게임 못하지' );
+    }
   };
 
   join = () => {
