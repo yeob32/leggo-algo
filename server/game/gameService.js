@@ -56,7 +56,7 @@ const shuffle = () => {
   let temp = {};
 
   Game.pileCards.forEach( ( card, index ) => {
-    const random = Game.pileCards[Math.floor( Math.random() * ( index + 1 ) )];
+    const random = Math.floor( Math.random() * ( index + 1 ) );
 
     temp = card;
     Game.pileCards[index] = Game.pileCards[random];

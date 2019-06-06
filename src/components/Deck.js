@@ -89,30 +89,14 @@ class Deck extends React.PureComponent {
           title="카드 선택"
           trigger={trigger}
         >
-          <Badge count={(
-            <Icon
-              type="clock-circle"
-              style={{ color: '#f5222d' }}
-            />
-)}
-          >
-            <a>
-              <div
-                className="deck-shape"
-                style={{ backgroundColor: deck.type === 'black' ? '#3E3C3C' : '#FAF5F5' }}
-              >
-                <div className="deck-detail">{deckContext}</div>
-              </div>
-            </a>
-
-            {/* <a
-              href=""
-              className="deck-shape"
+          <a>
+            <div
+              className={deck.flip ? 'deck-flip' : 'deck-shape'}
+              style={{ backgroundColor: deck.type === 'black' ? '#3E3C3C' : '#FAF5F5' }}
             >
-              {deckContext}
-            </a> */}
-            {/* <Button type={buttonType}>{deckContext}</Button> */}
-          </Badge>
+              <div className="deck-detail">{deckContext}</div>
+            </div>
+          </a>
         </Popover>
       );
     };
