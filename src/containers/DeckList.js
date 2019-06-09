@@ -17,15 +17,16 @@ const DeckList = ( { member, pileCards, discardHolder } ) => {
 
   console.log( 'pileCards > ', pileCards );
   console.log( 'excludedDiscardHolder > ', excludedDiscardHolder );
+  console.log( 'enableSelectCardList > ', enableSelectCardList );
+
   // TODO 서버에서 처리.... ?
   let temp;
-  const shuffleCardList = enableSelectCardList.map( ( card, index ) => {
+  enableSelectCardList.forEach( ( card, index ) => {
     const random = Math.floor( Math.random() * ( index + 1 ) );
 
-    console.log( 'random > ', random );
     temp = enableSelectCardList[random];
     enableSelectCardList[random] = card;
-    return temp;
+    enableSelectCardList[index] = temp;
   } );
 
   return (
