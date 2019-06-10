@@ -135,6 +135,17 @@ function onConnect( socket ) {
     io.emit( 'game-status', { item: gameStatus } );
   } );
 
+  socket.on( 'action-hold', function( data ) {
+    const { id } = data;
+
+    gameService.orderStack();
+    gameService.updateAuthAction( id, { hold: false, check: false, random: false } );
+    gameService.updateTurnAction( id, false );
+
+    socket.emit( 'update-session', { item: gameStatus.members } );
+    io.emit( 'game-status', { item: gameStatus, message: '패스 ~~~' } );
+  } );
+
   socket.on( 'end', function() {
     io.emit( 'game-status', { item: gameStatus, message: '게임 종료' } ); // 게임 결과 리턴
     io.emit( 'end' );

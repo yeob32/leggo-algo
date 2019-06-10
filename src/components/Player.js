@@ -10,7 +10,8 @@ const colorList = [ '#f56a00', '#7265e6', '#ffbf00', '#00a2ae' ];
 const Player = ( { member, pileCards, discardHolder, session } ) => {
   const myTurn = member.id === session.id;
   const disabled = session.auth.random;
-  const showRandomCardButton = member.turn && myTurn;
+  const showActionButton = member.turn && myTurn;
+  const disabledHold = !session.auth.check;
 
   const getRandomCard = id => {
     if ( pileCards ) {
@@ -19,10 +20,15 @@ const Player = ( { member, pileCards, discardHolder, session } ) => {
     }
   };
 
+  const hold = id => {
+    console.log( 'pass' );
+    socketUtils().emit( 'action-hold', { id } );
+  };
+
   const PlayerInfo = () => (
     <div>
       <Row>
-        <Col span={12}>
+        <Col span={6}>
           <Avatar
             style={{ backgroundColor: colorList[member.order], verticalAlign: 'middle' }}
             size="large"
@@ -38,17 +44,31 @@ const Player = ( { member, pileCards, discardHolder, session } ) => {
               spin
             />
 )}
-            {showRandomCardButton ? (
-              <Button
-                type="primary"
-                disabled={disabled}
-                onClick={() => getRandomCard( member.id )}
-              >
-                랜덤 카드
-              </Button>
-            ) : (
-              ''
-            )}
+            <Row>
+              {showActionButton ? (
+                <Button
+                  type="primary"
+                  style={{ margin: '0px 5px 0px 0px' }}
+                  disabled={disabled}
+                  onClick={() => getRandomCard( member.id )}
+                >
+                  랜덤 카드
+                </Button>
+              ) : (
+                ''
+              )}
+              {showActionButton ? (
+                <Button
+                  type="primary"
+                  disabled={disabledHold}
+                  onClick={() => hold( member.id )}
+                >
+                  패스
+                </Button>
+              ) : (
+                ''
+              )}
+            </Row>
           </h1>
           {/* 만약 user 의 turn 이 true 면  trun 바뀔때마다 members data 받아서 다시 렌더링 */}
         </Col>

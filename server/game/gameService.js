@@ -72,7 +72,7 @@ const sortDeck = id => {
 
   let temp;
 
-  // TODO 허허....어렵네 이거
+  // TODO 허허....어렵네 이거 // 오름차순 정렬 -> 중복 시 색깔 정렬
   for ( let i = 0; i < deckList.length; i++ ) {
     temp = deckList[i];
 
@@ -104,6 +104,7 @@ const randomCardAction = ( id, cardId ) => {
     }
   } );
 
+  Game.discardHolder.push( pileCard );
   Game.pileCards = Game.pileCards.filter( card => card.id !== pileCard.id );
 
   return pileCard;
