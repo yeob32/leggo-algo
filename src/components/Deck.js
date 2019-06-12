@@ -2,9 +2,7 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import { Popconfirm, Popover, message, Icon, Button, Badge } from 'antd';
-
-import socketUtils from '../utils/socketUtil';
+import { Popover, Icon } from 'antd';
 
 import PileDeck from './PileDeck';
 

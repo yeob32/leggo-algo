@@ -2,7 +2,7 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import { Popconfirm, Popover, message, Icon, Button, Badge } from 'antd';
+import { Popconfirm, message, Icon, Button } from 'antd';
 
 import socketUtils from '../utils/socketUtil';
 
@@ -49,20 +49,12 @@ class PileDeck extends React.PureComponent {
     console.log( 'data > ', data );
 
     this.setState( { visible: data } );
-    // this.setState( { visible: data } );
-    // if ( !data ) {
-    //   this.setState( { visible: data } );
-    // }
     console.log( 'this.state.visible > ', this.state.visible );
   };
 
   render() {
     const { enableCard, deck, member } = this.props;
     const { turn } = this.props.sessionReducer;
-
-    if ( !turn ) {
-      this.setState( { visible: false } );
-    }
 
     return (
       <Popconfirm

@@ -34,6 +34,10 @@ class PlayGround extends Component {
         if ( data.message ) {
           message.warning( data.message );
         }
+
+        if ( data.option && data.option.countdown ) {
+          // initCountdown();
+        }
       }
     } );
 

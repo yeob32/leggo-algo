@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Button, message } from 'antd';
+import { Button, message, Row } from 'antd';
+
+import DefaultCountdown from '../components/DefaultCountdown';
 
 import socketUtil from '../utils/socketUtil';
 
@@ -60,7 +62,7 @@ class ControllPanel extends React.Component {
     const showButton = host && !deal;
 
     return (
-      <div>
+      <Row>
         {showButton ? (
           <Button
             type="primary"
@@ -89,7 +91,9 @@ class ControllPanel extends React.Component {
         >
           나가기
         </Button>
-      </div>
+
+        <DefaultCountdown />
+      </Row>
     );
   }
 }

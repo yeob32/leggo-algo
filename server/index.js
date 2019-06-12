@@ -75,10 +75,17 @@ function onConnect( socket ) {
 
   // 시작
   socket.on( 'start', function( data ) {
-    gameService.start();
+    // gameService.start();
+    gameService.dealCard(); // 카드 분배
+    gameService.shuffle(); // 카드 섞기
+    gameService.orderStack(); // 순서 설정
 
     io.emit( 'update-session', { item: gameStatus.members } );
-    io.emit( 'game-status', { item: gameStatus, message: '게임 시작!!' } );
+    io.emit( 'game-status', {
+      item: gameStatus,
+      message: '게임 시작!!',
+      option: { countdown: true },
+    } );
   } );
 
   // 나가기
@@ -111,6 +118,8 @@ function onConnect( socket ) {
   socket.on( 'action-check', function( type, data ) {
     const { id, targetMemberId, cardId } = data;
 
+    let initCountdown = false;
+
     switch ( type ) {
       case 'success': // 상대카드 뒤집기
         gameService.updateDeckAction( targetMemberId, cardId );
@@ -127,12 +136,13 @@ function onConnect( socket ) {
         gameService.tempToPile( id );
         // 클라이언트에서는 end 가 false 니까 turnOver , end 호출 가능하게 하면 됨 ,,, random은 호출 안되지
 
+        initCountdown = true;
         break;
       default:
     }
 
     io.emit( 'update-session', { item: gameStatus.members } );
-    io.emit( 'game-status', { item: gameStatus } );
+    io.emit( 'game-status', { item: gameStatus, option: { countdown: initCountdown } } );
   } );
 
   socket.on( 'action-hold', function( data ) {
@@ -143,7 +153,7 @@ function onConnect( socket ) {
     gameService.updateTurnAction( id, false );
 
     socket.emit( 'update-session', { item: gameStatus.members } );
-    io.emit( 'game-status', { item: gameStatus, message: '패스 ~~~' } );
+    io.emit( 'game-status', { item: gameStatus, message: '패스 ~~~', option: { countdown: true } } );
   } );
 
   socket.on( 'end', function() {

@@ -47,9 +47,10 @@ const initMember = ( id, name ) => {
 };
 
 const start = () => {
-  dealCard(); // 카드 분배
-  shuffle(); // 카드 섞기
-  orderStack(); // 순서 설정
+  // orderStack() 이벤트 실행 시 카운트다운하려고...........
+  // dealCard(); // 카드 분배
+  // shuffle(); // 카드 섞기
+  // orderStack(); // 순서 설정
 };
 
 const shuffle = () => {
@@ -245,4 +246,6 @@ module.exports = {
   orderStack,
   initGameStatus,
   tempToPile,
+  dealCard,
+  shuffle,
 };

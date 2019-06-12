@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, Avatar, Row, Col, Icon, Button } from 'antd';
+import { Card, Avatar, Row, Col, Button, Spin } from 'antd';
 
 import DeckList from '../containers/DeckList';
 import socketUtils from '../utils/socketUtil';
@@ -38,12 +38,14 @@ const Player = ( { member, pileCards, discardHolder, session } ) => {
         </Col>
         <Col span={12}>
           <h1>
-            {member.name} {member.turn && (
-            <Icon
-              type="sync"
-              spin
-            />
-)}
+            {member.name} &nbsp;
+            {member.turn && (
+              <Spin />
+              // <Icon
+              //   type="sync"
+              //   spin
+              // />
+            )}
             <Row>
               {showActionButton ? (
                 <Button
