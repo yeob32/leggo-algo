@@ -108,11 +108,16 @@ function onConnect( socket ) {
       ? gameService.randomCardAction( id, cardId )
       : gameService.randomCardAction( id );
 
-    gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
-    message = '카드 게또';
+    if ( result.joker ) {
+      socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
+      socket.emit( 'select-position', { deck: result } );
+    } else {
+      gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
+      message = '카드 게또';
 
-    socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
-    io.emit( 'game-status', { item: gameStatus, message } );
+      socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
+      io.emit( 'game-status', { item: gameStatus, message } );
+    }
   } );
 
   socket.on( 'action-check', function( type, data ) {
@@ -157,6 +162,7 @@ function onConnect( socket ) {
   } );
 
   socket.on( 'end', function() {
+    // 팝업 뜨면서 점수, 순위 노출
     io.emit( 'game-status', { item: gameStatus, message: '게임 종료' } ); // 게임 결과 리턴
     io.emit( 'end' );
   } );

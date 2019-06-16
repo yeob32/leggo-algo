@@ -49,7 +49,6 @@ class Deck extends React.PureComponent {
         }
       }
 
-      // file => 색깔 구분
       return (
         <Popover
           content={child}

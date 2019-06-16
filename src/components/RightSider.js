@@ -67,6 +67,17 @@ class LeftSider extends Component {
           >
             {memberComponent}
           </SubMenu>
+          <SubMenu
+            key="sub3"
+            title={(
+              <span>
+                <Icon type="user" />
+                <span>watch</span>
+              </span>
+)}
+          >
+            <Menu.Item key="sub3">watch users</Menu.Item>
+          </SubMenu>
           <Menu.Item key="9">
             <Icon type="file" />
             <span>File</span>

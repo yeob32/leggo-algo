@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import PlayerList from './PlayerList';
 import Stack from './Stack';
 import ControllPanel from './ControllPanel';
+import DefaultModal from '../components/DefaultModal';
 
 import './PlayGround.css';
 
@@ -17,7 +18,7 @@ import socketUtil, { initSocket } from '../utils/socketUtil';
 import { saveSession, initSession, updateSession } from '../store/session/actions';
 import { updateStatus } from '../store/game/actions';
 
-import { message, Row, Col } from 'antd';
+import { message, Row, Col, Modal } from 'antd';
 
 class PlayGround extends Component {
   componentDidMount() {
@@ -54,6 +55,10 @@ class PlayGround extends Component {
     } );
 
     socketUtil().on( 'exit-result', data => {
+      this.props.initSession();
+    } );
+
+    socketUtil().on( 'select-position', data => {
       this.props.initSession();
     } );
   }
@@ -115,6 +120,7 @@ class PlayGround extends Component {
             <Stack pileCards={pileCards} />
           </Row>
         </div>
+        <DefaultModal />
       </MainStructure>
     );
   }

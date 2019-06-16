@@ -36,8 +36,6 @@ const Card = ( { card, session } ) => {
     if ( !disabled ) {
       setVisible( data );
     }
-
-    console.log( 'data > ', data );
   };
 
   return (
