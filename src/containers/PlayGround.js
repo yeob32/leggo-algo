@@ -17,6 +17,7 @@ import StatusInterface from '../components/StatusInterface';
 import socketUtil, { initSocket } from '../utils/socketUtil';
 import { saveSession, initSession, updateSession } from '../store/session/actions';
 import { updateStatus } from '../store/game/actions';
+import { toggleModal } from '../store/modal/actions';
 
 import { message, Row, Col, Modal } from 'antd';
 
@@ -58,8 +59,16 @@ class PlayGround extends Component {
       this.props.initSession();
     } );
 
-    socketUtil().on( 'select-position', data => {
-      this.props.initSession();
+    socketUtil().on( 'select-joker-position', data => {
+      this.props.toggle( { visible: true } );
+    } );
+
+    socketUtil().on( 'lucky-joker', data => {
+      const sessionReducer = this.props.sessionReducer;
+
+      if ( sessionReducer.id === data.id ) {
+        this.props.toggle( { visible: true } );
+      }
     } );
   }
 
@@ -131,6 +140,7 @@ const mapDispatchToProps = dispatch => ( {
   initSession: () => dispatch( initSession() ),
   updateGameStatus: data => dispatch( updateStatus( data ) ),
   updateSession: data => dispatch( updateSession( data ) ),
+  toggle: data => dispatch( toggleModal( data ) ),
 } );
 
 export default withRouter(

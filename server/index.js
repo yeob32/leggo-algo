@@ -86,6 +86,14 @@ function onConnect( socket ) {
       message: '게임 시작!!',
       option: { countdown: true },
     } );
+
+    gameStatus.members.forEach( member => {
+      member.deck.forEach( deck => {
+        if ( deck.joker ) {
+          io.emit( 'lucky-joker', { id: member.id, deck } );
+        }
+      } );
+    } );
   } );
 
   // 나가기
@@ -110,7 +118,8 @@ function onConnect( socket ) {
 
     if ( result.joker ) {
       socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
-      socket.emit( 'select-position', { deck: result } );
+      io.emit( 'game-status', { item: gameStatus, message } );
+      socket.emit( 'select-joker-position', { deck: result } );
     } else {
       gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
       message = '카드 게또';
