@@ -30,26 +30,27 @@ class DefaultModal extends React.PureComponent {
     const { visible } = this.props.modalReducer;
 
     const radioComponents =
-      visible &&
+      decks &&
       decks.map( ( deck, index ) => {
         return (
-          <div>
+          <React.Fragment>
             {index === 0 && (
-              <Col span={2}>
-                <Radio.Button value="front">
+              <Col span={3}>
+                <Radio.Button value="temp_first">
                   <Icon type="check-square" />
                 </Radio.Button>
               </Col>
             )}
-            <Col span={2}>
+
+            <Col span={3}>
               <Radio.Button value={index}>{deck.name}</Radio.Button>
             </Col>
-            <Col span={2}>
-              <Radio.Button value={'temp' + index}>
+            <Col span={3}>
+              <Radio.Button value={'temp_' + index}>
                 <Icon type="check-square" />
               </Radio.Button>
             </Col>
-          </div>
+          </React.Fragment>
         );
       } );
 
@@ -59,14 +60,18 @@ class DefaultModal extends React.PureComponent {
           title="Basic Modal"
           visible={visible}
           onOk={this.handleOk}
+          cancelButtonProps={{ disabled: true }}
+          width="800"
           // onCancel={this.handleCancel}
         >
-          <Radio.Group
-            onChange={this.onChange}
-            value={this.state.value}
-          >
-            <Row>{radioComponents}</Row>
-          </Radio.Group>
+          <div>
+            <Radio.Group
+              onChange={this.onChange}
+              value={this.state.value}
+            >
+              <Row>{radioComponents}</Row>
+            </Radio.Group>
+          </div>
         </Modal>
       </div>
     );

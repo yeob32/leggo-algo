@@ -79,6 +79,7 @@ function onConnect( socket ) {
     gameService.dealCard(); // 카드 분배
     gameService.shuffle(); // 카드 섞기
     gameService.orderStack(); // 순서 설정
+    gameService.sortDeck(); // 카드 정렬
 
     io.emit( 'update-session', { item: gameStatus.members } );
     io.emit( 'game-status', {
@@ -145,6 +146,7 @@ function onConnect( socket ) {
         // temp 오브젝트 제거하고 member.deck 에서 temp 카드 찾아서 flip => true
 
         gameService.orderStack();
+        gameService.sortDeck();
         gameService.updateAuthAction( id, { hold: false, check: false, random: false } );
         gameService.updateTurnAction( id, false );
         gameService.tempToPile( id );
@@ -163,6 +165,7 @@ function onConnect( socket ) {
     const { id } = data;
 
     gameService.orderStack();
+    gameService.sortDeck();
     gameService.updateAuthAction( id, { hold: false, check: false, random: false } );
     gameService.updateTurnAction( id, false );
 

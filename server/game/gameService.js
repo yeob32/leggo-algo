@@ -66,22 +66,64 @@ const shuffle = () => {
 };
 
 const sortDeck = id => {
-  const player = Game.members.find( member => member.id === id );
-  const deckList = player.deck;
+  if ( id ) {
+    const playerDecks = Game.members.find( member => member.id === id ).deck;
 
-  const totalDeckCount = 24;
-
-  let temp;
-
-  // TODO 허허....어렵네 이거 // 오름차순 정렬 -> 중복 시 색깔 정렬
-  for ( let i = 0; i < deckList.length; i++ ) {
-    temp = deckList[i];
-
-    for ( let j = 0; j < deckList.length - 1; j++ ) {
-      console.log( deckList[j] );
-    }
+    sorting( playerDecks );
+  } else {
+    Game.members.forEach( member => {
+      sorting( member.deck );
+    } );
   }
 };
+
+function sorting( deckList ) {
+  let temp;
+
+  console.log( 'start deck > ', deckList.map( deck => deck.value ) );
+
+  // { type: 'black', id: 'black_12', name: '-', value: '12', joker: true },
+  // TODO 오름차순 정렬 -> 중복 시 색깔 정렬
+  for ( let i = 0; i < deckList.length; i++ ) {
+    for ( let j = 1; j < deckList.length; j++ ) {
+      temp = deckList[j - 1];
+
+      const tempValue = parseInt( temp.value, 10 );
+      const nextValue = parseInt( deckList[j].value, 10 );
+
+      if ( temp.joker ) {
+        // deckList[j - 1] = deckList[j];
+        // deckList[j] = temp;
+        console.log( 'this is joker' );
+        // eslint-disable-next-line no-continue
+        // continue;
+      }
+
+      if ( tempValue > nextValue ) {
+        deckList[j - 1] = deckList[j];
+        deckList[j] = temp;
+
+        console.log( 'change ', deckList.map( deck => deck.value ) );
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      if ( tempValue === nextValue ) {
+        if ( temp.type === 'white' ) {
+          deckList[j - 1] = deckList[j];
+          deckList[j] = temp;
+
+          console.log( 'same > ', deckList.map( deck => deck.value ) );
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+      }
+
+      console.log( 'internel > result > ', deckList.map( deck => deck.value ) );
+    }
+    console.log( 'result > ', deckList.map( deck => deck.value ) );
+  }
+}
 
 const getMemberList = () => {
   return Game.members;
@@ -248,4 +290,5 @@ module.exports = {
   tempToPile,
   dealCard,
   shuffle,
+  sortDeck,
 };
