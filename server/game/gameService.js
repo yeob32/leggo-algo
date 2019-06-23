@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unreachable */
@@ -31,6 +32,7 @@ const createMember = ( id, name ) => ( {
   },
   turn: false,
   temp: {},
+  jokerBag: {},
 } );
 
 const initMember = ( id, name ) => {
@@ -92,19 +94,26 @@ function sorting( deckList ) {
       const nextValue = parseInt( deckList[j].value, 10 );
 
       if ( temp.joker ) {
+        console.log( 'this is joker' );
         // deckList[j - 1] = deckList[j];
         // deckList[j] = temp;
-        console.log( 'this is joker' );
-        // eslint-disable-next-line no-continue
-        // continue;
+
+        continue;
+      }
+
+      if ( deckList[j].joker ) {
+        if ( deckList.length - 1 !== j ) {
+          deckList[j - 1] = deckList[j + 1];
+          deckList[j + 1] = temp;
+        }
+
+        continue;
       }
 
       if ( tempValue > nextValue ) {
         deckList[j - 1] = deckList[j];
         deckList[j] = temp;
 
-        console.log( 'change ', deckList.map( deck => deck.value ) );
-        // eslint-disable-next-line no-continue
         continue;
       }
 
@@ -113,15 +122,11 @@ function sorting( deckList ) {
           deckList[j - 1] = deckList[j];
           deckList[j] = temp;
 
-          console.log( 'same > ', deckList.map( deck => deck.value ) );
           // eslint-disable-next-line no-continue
           continue;
         }
       }
-
-      console.log( 'internel > result > ', deckList.map( deck => deck.value ) );
     }
-    console.log( 'result > ', deckList.map( deck => deck.value ) );
   }
 }
 

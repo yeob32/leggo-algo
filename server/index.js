@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-case-declarations */
 const express = require( 'express' );
 const app = express();
@@ -91,6 +92,7 @@ function onConnect( socket ) {
     gameStatus.members.forEach( member => {
       member.deck.forEach( deck => {
         if ( deck.joker ) {
+          member.jokerBag = deck;
           io.emit( 'lucky-joker', { id: member.id, deck } );
         }
       } );
@@ -117,17 +119,59 @@ function onConnect( socket ) {
       ? gameService.randomCardAction( id, cardId )
       : gameService.randomCardAction( id );
 
-    if ( result.joker ) {
-      socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
-      io.emit( 'game-status', { item: gameStatus, message } );
-      socket.emit( 'select-joker-position', { deck: result } );
-    } else {
-      gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
-      message = '카드 게또';
+    gameService.updateAuthAction( id, { random: true } ); // 액션 상태 변경
+    message = '카드 게또';
 
+    console.log( 'result >>>> ', result );
+
+    gameService.sortDeck();
+
+    if ( result.joker ) {
+      gameStatus.members.forEach( member => {
+        if ( member.id === id ) {
+          member.jokerBag = result;
+        }
+      } );
+
+      console.log( 'joker >>>>>>>> ', gameStatus.members.filter( member => member.id === id ) );
+
+      // socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
+      // io.emit( 'game-status', { item: gameStatus, message } );
+      socket.emit( 'select-joker-position', { deck: result } );
+      // socket.emit( 'update-session', { item: gameStatus.members } );
+    } else {
       socket.emit( 'update-session', { item: gameStatus.members, pm: result.name + ' 카드 게또!' } );
       io.emit( 'game-status', { item: gameStatus, message } );
     }
+  } );
+
+  socket.on( 'select-joker-position', function( payload ) {
+    const { id, position } = payload;
+
+    console.log( 'id > ', id );
+    console.log( 'position > ', position );
+
+    let temp;
+    gameStatus.members.forEach( member => {
+      if ( member.id === id ) {
+        const joker = member.jokerBag;
+
+        console.log( 'joker > ', joker );
+        member.deck.forEach( ( dck, index ) => {
+          if ( dck.id === joker.id ) {
+            dck.fixed = true;
+
+            temp = member.deck[position];
+            member.deck[position] = dck;
+            member.deck[index] = temp;
+          }
+        } );
+      }
+    } );
+
+    let message = '카드 게또';
+    socket.emit( 'update-session', { item: gameStatus.members } );
+    io.emit( 'game-status', { item: gameStatus, message } );
   } );
 
   socket.on( 'action-check', function( type, data ) {
